@@ -2,11 +2,14 @@ const html = require('choo/html')
 const Artists = require('../../components/artists')
 const { background } = require('@resonate/theme-skins')
 const viewLayout = require('../../elements/view-layout')
+const Layout = require('../../elements/layout')
 
-module.exports = ArtistsView
+module.exports = Layout(ArtistsView)
 
 function ArtistsView () {
   return (state, emit) => {
+    emit('prefetch:artists')
+
     const artists = state.cache(Artists, 'artists').render({
       items: state.artists.items,
       numberOfPages: state.artists.numberOfPages

@@ -7,12 +7,16 @@ const ProfileHeaderImage = require('../../components/profile-header-image')
 const Labels = require('../../components/labels')
 const Links = require('../../components/links')
 const viewLayout = require('../../elements/view-layout')
+const Layout = require('../../elements/layout')
 
-module.exports = ArtistView
+module.exports = Layout(ArtistView)
 
 function ArtistView () {
   return (state, emit) => {
-    const id = parseInt(state.params.uid, 10)
+    const id = Number(state.params.uid)
+
+    emit('prefetch:artist', id)
+
     if (isNaN(id)) return emit(state.events.PUSHSTATE, '/')
 
     return viewLayout((state, emit) => html`
@@ -30,7 +34,7 @@ function ArtistView () {
     `)(state, emit)
 
     function renderHeader (state) {
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const image = state.artist.data.avatar || {}
       const cover = image['cover']
       const profileHeaderImage = state.cache(ProfileHeaderImage, `profile-header-image-${id}`)
@@ -46,7 +50,7 @@ function ArtistView () {
     }
 
     function renderTracks (state) {
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const playlist = state.cache(Playlist, `playlist-artist-${id}`).render({
         type: 'tracks',
         playlist: state.artist.tracks || []
@@ -60,7 +64,7 @@ function ArtistView () {
     }
 
     function renderTopTracks (state) {
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const playlist = state.cache(Playlist, `playlist-artist-top-${id}`).render({
         type: 'tracks',
         playlist: state.artist.topTracks || []
@@ -75,7 +79,7 @@ function ArtistView () {
 
     function renderLatestRelease (state) {
       const { items = [] } = state.artist.latestRelease
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const albums = state.cache(Albums, 'artist-albums-latest-' + id).render({
         items,
         pagination: false
@@ -90,7 +94,7 @@ function ArtistView () {
 
     function renderAlbums (state) {
       const { items = [], numberOfPages = 1 } = state.artist.albums
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const albums = state.cache(Albums, 'artist-albums-' + id).render({
         items,
         numberOfPages: numberOfPages,
@@ -123,7 +127,7 @@ function ArtistView () {
     }
 
     function renderMemberOf (state) {
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const items = []
       const label = state.artist.data.label || {}
       items.push(label)

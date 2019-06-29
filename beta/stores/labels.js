@@ -84,7 +84,10 @@ function labels () {
 
         machine.emit('start')
 
-        const response = await state.api.labels.find({ page: pageNumber - 1, limit: 20 })
+        const response = await state.api.labels.find({
+          page: pageNumber - 1,
+          limit: 20
+        })
 
         loader.emit('loader:toggle')
         machine.emit('resolve')
@@ -182,7 +185,11 @@ function labels () {
 
       try {
         const { label, albums } = await promiseHash({
-          albums: state.api.labels.getAlbums({ uid, limit: 5, page: pageNumber - 1 }),
+          albums: state.api.labels.getAlbums({
+            uid,
+            limit: 5,
+            page: pageNumber - 1
+          }),
           label: state.api.labels.findOne({ uid })
         })
 
@@ -225,7 +232,11 @@ function labels () {
 
       try {
         const { label, artists } = await promiseHash({
-          artists: state.api.labels.getArtists({ uid, limit: 20, page: pageNumber - 1 }),
+          artists: state.api.labels.getArtists({
+            uid,
+            limit: 20,
+            page: pageNumber - 1
+          }),
           label: state.api.labels.findOne({ uid })
         })
 

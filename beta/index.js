@@ -1,17 +1,18 @@
-require('babel-polyfill')
+require('isomorphic-fetch')
+
+if (process.env.NODE_ENV === 'development') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+}
 
 const { isBrowser } = require('browser-or-node')
+const lazy = require('choo-lazy-view')
 
-const css = require('sheetify')
 const choo = require('choo')
 const plugins = require('@resonate/choo-plugins')
 
-css('@resonate/tachyons')
-css('./styles/menu')
-css('./styles/dropdown-navigation')
-css('@resonate/tachyons/src/utilities/_fouc')
-
 const app = choo({ hash: false })
+
+app.use(lazy)
 
 if (isBrowser) {
   require('web-animations-js/web-animations.min')

@@ -7,7 +7,7 @@
     "build": "bankai build --debug index.js",
     "create": "choo-scaffold",
     "inspect": "bankai inspect index.js",
-    "start": "bankai start index.js",
+    "start": "jalla index.js --port 8080",
     "test": "standard && npm run test-deps",
     "test-deps": "dependency-check . && dependency-check . --extra --no-dev -i @resonate/tachyons",
     "test-browser": "browserify test/browser/index.js | tape-run | tap-format-spec"
@@ -16,12 +16,54 @@
   "browserify": {
     "transform": [
       [
+        "sheetify",
+        {
+          "transform": [
+            [
+              "sheetify-postcss",
+              {
+                "plugins": [
+                  [
+                    "postcss-import"
+                  ],
+                  [
+                    "postcss-preset-env",
+                    {
+                      "stage": 1,
+                      "features": {
+                        "nesting-rules": true
+                      }
+                    }
+                  ],
+                  [
+                    "postcss-custom-media"
+                  ]
+                ]
+              }
+            ]
+          ],
+          "global": true
+        }
+      ],
+      [
         "@resonate/envlocalify",
         {
           "global": true
         }
       ]
     ]
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "postcss-preset-env": {
+        "stage": 1,
+        "features": {
+          "nesting-rules": true
+        }
+      },
+      "postcss-custom-media": {}
+    }
   },
   "browser": {
     "assert": "nanoassert"
@@ -31,32 +73,6 @@
     ">1%",
     "not dead"
   ],
-  "sheetify": {
-    "transform": [
-      [
-        "sheetify-postcss",
-        {
-          "plugins": [
-            [
-              "postcss-import"
-            ],
-            [
-              "postcss-preset-env",
-              {
-                "stage": 1,
-                "features": {
-                  "nesting-rules": true
-                }
-              }
-            ],
-            [
-              "postcss-custom-media"
-            ]
-          ]
-        }
-      ]
-    ]
-  },
   "standard": {
     "ignore": [
       "/dist/**/*.js"
@@ -83,14 +99,16 @@
     "babel-polyfill": "^6.26.0",
     "browser-cookies": "^1.2.0",
     "browser-or-node": "^1.1.0",
-    "choo": "^6.13.0",
+    "choo": "7.0.0-0",
     "choo-devtools": "^2.5.1",
+    "choo-lazy-view": "^1.0.1",
     "choo-meta": "^1.0.4",
     "choo-notification": "^1.0.0",
     "choo-service-worker": "^2.4.0",
     "clipboard-copy": "^3.0.0",
     "dialog-polyfill": "^0.4.9",
     "is-equal-shallow": "^0.1.3",
+    "isomorphic-fetch": "^2.2.1",
     "localforage": "^1.7.1",
     "mm-ss": "^1.0.0",
     "nanoanimation": "^2.1.0",

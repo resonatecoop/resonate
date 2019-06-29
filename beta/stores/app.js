@@ -26,8 +26,10 @@ const Playlist = require('@resonate/playlist-component')
 
 function app () {
   return (state, emitter) => {
+    state.events.APIREADY = 'APIREADY'
+    state.title = state.title || 'Resonate'
+
     Object.assign(state, {
-      title: 'Resonate',
       resolved: false,
       app: {
         onlineStatus: 'ONLINE'
@@ -67,12 +69,14 @@ function app () {
 
       const fullTitle = setTitle(title)
 
-      emitter.emit('meta', {
+      state.meta = {
         'title': fullTitle,
         'twitter:card': 'summary_large_image',
         'twitter:title': fullTitle,
         'twitter:site': '@resonatecoop'
-      })
+      }
+
+      emitter.emit('meta', state.meta)
     }
 
     emitter.on('route:/', async () => {
@@ -94,7 +98,9 @@ function app () {
         log.info(`Redirecting to ${state.redirect}`)
         return emitter.emit(state.events.PUSHSTATE, '/login')
       }
+
       const scope = `/${state.user.username}`
+
       emitter.emit(state.events.PUSHSTATE, scope + `/library/${state.params.type}`)
     })
 
@@ -106,15 +112,14 @@ function app () {
       }
 
       state.tracks = []
+
       emitter.emit(state.events.RENDER)
 
       const id = `playlist-${state.params.type}`
       const { machine, events } = state.components[id] || state.cache(Playlist, id).local
-
-      const startLoader = () => {
-        events.emit('loader:on')
-      }
+      const startLoader = () => events.emit('loader:on')
       const loaderTimeout = setTimeout(startLoader, 300)
+
       try {
         const user = await storage.getItem('user')
         const pageNumber = state.query.page ? Number(state.query.page) : 1
@@ -139,7 +144,6 @@ function app () {
 
         emitter.emit(state.events.RENDER)
       } catch (err) {
-        console.log(err)
         machine.emit('reject')
         log.error(err)
       } finally {
@@ -152,11 +156,9 @@ function app () {
 
       emitter.emit(state.events.RENDER)
 
-      const { machine, events } = state.components[`playlist-${state.params.type}`] || state.cache(Playlist, `playlist-${state.params.type}`).local
-
-      const startLoader = () => {
-        events.emit('loader:on')
-      }
+      const cpnId = `playlist-${state.params.type}`
+      const { machine, events } = state.components[cpnId] || state.cache(Playlist, cpnId).local
+      const startLoader = () => events.emit('loader:on')
       const loaderTimeout = setTimeout(startLoader, 300)
 
       machine.emit('start')
@@ -211,18 +213,19 @@ function app () {
 
           if (response.status !== 401) {
             const { accessToken: token, clientId } = response
-            state.api = generateApi({ token, clientId, user: state.api.user })
 
-            emitter.emit('api:ok')
+            state.api = generateApi({
+              token,
+              clientId,
+              user: state.api.user
+            })
 
-            emitter.emit(state.events.RENDER)
+            emitter.emit(state.events.APIREADY)
           }
         } else {
           state.api = generateApi()
 
-          emitter.emit('api:ok')
-
-          emitter.emit(state.events.RENDER)
+          emitter.emit(state.events.APIREADY)
         }
       } catch (err) {
         log.error(err)
@@ -241,6 +244,8 @@ function app () {
 
       document.body.removeAttribute('unresolved') // this attribute was set to prevent fouc on chrome
 
+      emitter.emit('users:auth')
+
       emitter.on(state.events.OFFLINE, () => {
         emitter.emit('notify', { message: 'Your browser is offline' })
       })
@@ -249,12 +254,13 @@ function app () {
         emitter.emit(state.events.RENDER)
       })
 
-      emitter.emit('users:auth')
-
-      emitter.on('api:ok', () => {
+      emitter.on(state.events.APIREADY, () => {
         state.resolved = true
+
         emitter.emit(state.events.RENDER)
-        log.info('api ok')
+
+        log.info('API is ready')
+
         emitter.emit(`route:${state.route}`)
       })
     })
@@ -266,21 +272,35 @@ function app () {
     })
 
     emitter.on('credits:set', async (credits) => {
-      const user = await storage.getItem('user')
-      user.credits = credits
-      state.user = user
-      await storage.setItem('user', user)
-      emitter.emit('notify', { timeout: 3000, message: 'You credits have been topped up' })
-      emitter.emit(state.events.RENDER)
+      try {
+        const user = await storage.getItem('user')
+        user.credits = credits
+        state.user = user
+
+        await storage.setItem('user', user)
+
+        emitter.emit('notify', {
+          timeout: 3000,
+          message: 'You credits have been topped up'
+        })
+
+        emitter.emit(state.events.RENDER)
+      } catch (err) {
+        log.error(err)
+      }
     })
 
     emitter.on('storage:clear', () => {
       storage.clear()
-      const timeout = 3000
-      emitter.emit('notify', { timeout, message: 'Cache cleared. Reloading...' })
+
+      emitter.emit('notify', {
+        timeout: 3000,
+        message: 'Cache cleared. Reloading...'
+      })
+
       setTimeout(() => {
         window.location.reload()
-      }, timeout)
+      }, 3000)
     })
   }
 }

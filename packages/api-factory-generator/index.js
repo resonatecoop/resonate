@@ -1,4 +1,4 @@
-/* global Headers, fetch */
+/* global fetch */
 
 const queryString = require('query-string')
 const isObject = require('isobject')
@@ -54,18 +54,18 @@ const request = (path = '/', options = {}) => {
     .filter(Boolean)
     .join('')
 
-  const headers = new Headers()
+  const headers = {}
 
   if (token && auth) {
-    headers.append('Authorization', 'Bearer ' + token)
+    headers['Authorization'] = 'Bearer ' + token
   }
 
-  headers.append('Accept-Language', lang)
+  headers['Accept-Language'] = lang
 
   if (multipart) {
     body = data.formData
   } else {
-    headers.append('Content-Type', 'application/json')
+    headers['Content-Type'] = 'application/json'
     body = JSON.stringify(body)
   }
 

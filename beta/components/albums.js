@@ -18,6 +18,7 @@ class Albums extends Component {
   constructor (id, state, emit) {
     super(id)
 
+    this.local = state.components[id] = {}
     this.id = id
     this.state = state
     this.emit = emit
@@ -30,45 +31,38 @@ class Albums extends Component {
 
     this.log = nanologger(id)
 
-    this.machine = nanostate('idle', {
-      idle: { 'start': 'loading', 'resolve': 'data' },
-      loading: { 'resolve': 'data', reject: 'error' },
-      data: { 'start': 'idle', 'resolve': 'data' },
+    this.local.machine = nanostate('idle', {
+      idle: { 'start': 'loading', 'resolve': 'idle' },
+      loading: { 'resolve': 'idle', reject: 'error' },
       error: { 'start': 'idle' }
     })
 
-    this.machine.event('notFound', nanostate('notFound', {
+    this.local.machine.event('notFound', nanostate('notFound', {
       notFound: { start: 'idle' }
     }))
 
-    this.loader = nanostate.parallel({
+    this.local.loader = nanostate.parallel({
       loader: nanostate('off', {
         on: { 'toggle': 'off' },
         off: { 'toggle': 'on' }
       })
     })
 
-    this.loader.on('loader:toggle', () => {
-      this.log.info('loader:toggle', this.loader.state.loader)
+    this.local.loader.on('loader:toggle', () => {
       if (this.element) this.rerender()
     })
 
-    this.machine.on('notFound', () => {
+    this.local.machine.on('notFound', () => {
       this.log.info('notFound')
       if (this.element) this.rerender()
     })
 
-    this.machine.on('loading', () => {
+    this.local.machine.on('loading', () => {
       this.log.info('loading')
     })
 
-    this.machine.on('error', () => {
+    this.local.machine.on('error', () => {
       this.log.error('error')
-      if (this.element) this.rerender()
-    })
-
-    this.machine.on('data', () => {
-      this.log.info('data')
       if (this.element) this.rerender()
     })
   }
@@ -84,10 +78,10 @@ class Albums extends Component {
       loading: {
         'on': this.renderLoader,
         'off': () => void 0
-      }[this.loader.state.loader](),
+      }[this.local.loader.state.loader](),
       notFound: this.renderPlaceholder(),
       error: this.renderError()
-    }[this.machine.state] || this.renderAlbums()
+    }[this.local.machine.state] || this.renderAlbums()
 
     let paginationEl
 
@@ -138,7 +132,7 @@ class Albums extends Component {
       options: { animate: true, repeat: true, reach: 9, fps: 10 }
     })
     return html`
-      <div class="flex flex-column flex-auto items-center justify-center">
+      <div class="flex flex-column flex-auto items-center justify-center h5">
         ${loader}
       </div>
     `
