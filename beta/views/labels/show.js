@@ -1,3 +1,4 @@
+const { isNode } = require('browser-or-node')
 const raw = require('choo/html/raw')
 const html = require('choo/html')
 const Albums = require('../../components/albums')
@@ -6,12 +7,17 @@ const ProfileHeader = require('../../components/profile-header')
 const ProfileHeaderImage = require('../../components/profile-header-image')
 const socialLinks = require('../../elements/social-buttons')
 const viewLayout = require('../../elements/view-layout')
+const Layout = require('../../elements/layout')
 
-module.exports = LabelView
+module.exports = Layout(LabelView)
 
 function LabelView () {
   return (state, emit) => {
     return viewLayout((state, emit) => {
+      const id = Number(state.params.uid)
+
+      isNode && emit('prefetch:label', id)
+
       return html`
         <section id="label-profile" class="flex flex-column flex-auto w-100">
           ${renderHeader(state)}
@@ -25,7 +31,7 @@ function LabelView () {
     })(state, emit)
 
     function renderHeader (state) {
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const profileHeader = state.cache(ProfileHeader, 'profile-header').render({
         data: state.label.data
       })
@@ -62,7 +68,7 @@ function LabelView () {
     }
 
     function renderArtists (state) {
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const { items = [], numberOfPages } = state.label.artists
       const artists = state.cache(Artists, 'label-artists-' + id).render({
         items,
@@ -81,7 +87,7 @@ function LabelView () {
 
     function renderAlbums (state) {
       const { items = [], numberOfPages = 1 } = state.label.albums
-      const id = parseInt(state.params.uid, 10)
+      const id = Number(state.params.uid)
       const albums = state.cache(Albums, 'label-albums-' + id).render({
         items,
         numberOfPages,

@@ -39,6 +39,61 @@ function labels () {
     emitter.on('route:labels/:uid/albums', getLabelAlbums)
     emitter.on('route:labels/:uid/artists', getLabelArtists)
 
+    /*
+     * Prefetch critical label data
+     */
+
+    emitter.once('prefetch:labels', () => {
+      emitter.emit('labels:meta')
+
+      state.labels = state.labels || {
+        items: [],
+        numberOfPages: 1
+      }
+
+      const pageNumber = state.query.page ? Number(state.query.page) : 1
+      const request = state.api.labels.find({
+        page: pageNumber - 1,
+        limit: 20
+      }).then(response => {
+        if (response.data) {
+          state.labels.items = response.data
+          state.labels.numberOfPages = response.numberOfPages
+        }
+
+        emitter.emit(state.events.RENDER)
+      })
+
+      if (state.prefetch) state.prefetch.push(request)
+    })
+
+    emitter.once('prefetch:label', (id) => {
+      state.label = state.label || {
+        data: {},
+        artists: {
+          items: [],
+          numberOfPages: 1
+        },
+        albums: {
+          items: [],
+          numberOfPages: 1
+        },
+        tracks: []
+      }
+
+      const request = state.api.label.findOne({ uid: id }).then(response => {
+        if (response.data) {
+          state.label.data = response.data
+        }
+
+        emitter.emit('labels:meta')
+
+        emitter.emit(state.events.RENDER)
+      })
+
+      if (state.prefetch) state.prefetch.push(request)
+    })
+
     function setMeta () {
       const { name = '', avatar = {} } = state.label.data
       const title = {

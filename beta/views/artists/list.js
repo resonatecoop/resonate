@@ -1,3 +1,4 @@
+const { isNode } = require('browser-or-node')
 const html = require('choo/html')
 const Artists = require('../../components/artists')
 const { background } = require('@resonate/theme-skins')
@@ -8,7 +9,7 @@ module.exports = Layout(ArtistsView)
 
 function ArtistsView () {
   return (state, emit) => {
-    emit('prefetch:artists')
+    isNode && emit('prefetch:artists')
 
     const artists = state.cache(Artists, 'artists').render({
       items: state.artists.items,

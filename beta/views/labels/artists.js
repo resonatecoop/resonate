@@ -7,7 +7,8 @@ module.exports = LabelArtistsView
 
 function LabelArtistsView () {
   return (state, emit) => {
-    const id = parseInt(state.params.uid, 10)
+    const id = Number(state.params.uid)
+
     if (isNaN(id)) return emit(state.events.PUSHSTATE, '/')
 
     const { items = [], numberOfPages = 1 } = state.label.artists

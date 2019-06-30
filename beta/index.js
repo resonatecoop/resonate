@@ -1,7 +1,7 @@
 require('isomorphic-fetch')
 
 if (process.env.NODE_ENV === 'development') {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0' // prevent ssl error from node when using self signed cert
 }
 
 const { isBrowser } = require('browser-or-node')
@@ -10,7 +10,7 @@ const lazy = require('choo-lazy-view')
 const choo = require('choo')
 const plugins = require('@resonate/choo-plugins')
 
-const app = choo({ hash: false })
+const app = choo()
 
 app.use(lazy)
 
@@ -24,6 +24,7 @@ if (isBrowser) {
     app.use(require('choo-devtools')())
     app.use(require('choo-service-worker/clear')())
   }
+
   app.use(require('choo-service-worker')('/sw.js', { scope: '/' }))
   app.use(require('choo-meta')())
 

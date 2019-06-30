@@ -1,3 +1,4 @@
+const { isNode } = require('browser-or-node')
 const raw = require('choo/html/raw')
 const html = require('choo/html')
 const Albums = require('../../components/albums')
@@ -15,7 +16,7 @@ function ArtistView () {
   return (state, emit) => {
     const id = Number(state.params.uid)
 
-    emit('prefetch:artist', id)
+    isNode && emit('prefetch:artist', id)
 
     if (isNaN(id)) return emit(state.events.PUSHSTATE, '/')
 
