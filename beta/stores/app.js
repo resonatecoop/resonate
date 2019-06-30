@@ -66,13 +66,12 @@ function app () {
       if (!title) return
 
       state.shortTitle = title
-
-      const fullTitle = setTitle(title)
+      state.title = setTitle(title)
 
       state.meta = {
-        'title': fullTitle,
+        'title': state.title,
         'twitter:card': 'summary_large_image',
-        'twitter:title': fullTitle,
+        'twitter:title': state.title,
         'twitter:site': '@resonatecoop'
       }
 

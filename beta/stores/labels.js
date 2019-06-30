@@ -107,20 +107,23 @@ function labels () {
 
       state.shortTitle = title
 
-      const fullTitle = setTitle(title)
+      state.title = setTitle(title)
+      state.shortTitle = title
 
       const image = {
         'labels/:uid': avatar.original || ''
       }[state.route]
 
-      emitter.emit('meta', {
-        'title': fullTitle,
+      state.meta = {
+        'title': state.title,
         'og:image': image,
         'twitter:card': 'summary_large_image',
-        'twitter:title': fullTitle,
+        'twitter:title': state.title,
         'twitter:image': image,
         'twitter:site': '@resonatecoop'
-      })
+      }
+
+      emitter.emit('meta', state.meta)
     }
 
     async function getLabels () {
