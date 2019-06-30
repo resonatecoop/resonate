@@ -81,7 +81,7 @@ function labels () {
         tracks: []
       }
 
-      const request = state.api.label.findOne({ uid: id }).then(response => {
+      const request = state.api.labels.findOne({ uid: id }).then(response => {
         if (response.data) {
           state.label.data = response.data
         }
