@@ -101,7 +101,8 @@ function artists () {
     })
 
     function setMeta () {
-      const { id, description, bio, name = '', avatar } = state.artist.data
+      const { name = '' } = state.artist.data
+      const { id, description = `Listen to ${name} on Resonate`, avatar } = state.artist.data
       const title = {
         'artists': 'Artists',
         'artists/:uid': name,
