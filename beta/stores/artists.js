@@ -101,8 +101,7 @@ function artists () {
     })
 
     function setMeta () {
-      const { name = '' } = state.artist.data
-      const { id, description = `Listen to ${name} on Resonate`, avatar } = state.artist.data
+      const { name, id, avatar, description } = state.artist.data
       const title = {
         'artists': 'Artists',
         'artists/:uid': name,
@@ -125,7 +124,7 @@ function artists () {
         'og:url': `https://beta.resonate.is/artists/${id}`,
         'og:image': image,
         'og:image:type': 'image/jpeg',
-        'og:description': description,
+        'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
         'twitter:title': state.title,
         'twitter:image': image,
