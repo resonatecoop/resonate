@@ -24,10 +24,10 @@ function tracks () {
     emitter.on('tracks:meta', setMeta)
 
     function setMeta () {
-      const { tid, artwork, name } = state.track.data
+      const { id, artwork, title: trackTitle } = state.track.data
 
       const title = {
-        'tracks/:id': name
+        'tracks/:id': trackTitle
       }[state.route]
 
       if (!title) return
@@ -46,8 +46,8 @@ function tracks () {
         'og:image': image,
         'og:title': state.title,
         'og:type': 'website',
-        'og:url': `https://beta.resonate.is/tracks/${tid}`,
-        'og:description': `Listen to ${name} on Resonate`,
+        'og:url': `https://beta.resonate.is/tracks/${id}`,
+        'og:description': `Listen to ${trackTitle} on Resonate`,
         'twitter:card': 'summary_large_image',
         'twitter:title': state.title,
         'twitter:image': image,
@@ -64,7 +64,7 @@ function tracks () {
 
       const request = state.api.tracks.findOne({ id }).then((response) => {
         if (response.data) {
-          state.track.data = response.data
+          state.track.data = adapter(response.data)
         }
 
         emitter.emit('tracks:meta')
@@ -76,7 +76,7 @@ function tracks () {
     })
 
     emitter.on('route:tracks/:id', async () => {
-      const id = parseInt(state.params.id, 10)
+      const id = Number(state.params.id)
       const isNew = state.track.data.id !== id
 
       if (!isNew) return
