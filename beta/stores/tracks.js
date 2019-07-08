@@ -45,6 +45,7 @@ function tracks () {
       state.meta = {
         'title': fullTitle,
         'og:image': image,
+        'og:image:type': 'image/jpeg',
         'og:title': fullTitle,
         'og:type': 'website',
         'og:url': `https://beta.resonate.is/tracks/${id}`,
@@ -52,6 +53,7 @@ function tracks () {
         'twitter:card': 'summary_large_image',
         'twitter:title': fullTitle,
         'twitter:image': image,
+        'twitter:image:type': 'image/jpeg',
         'twitter:site': '@resonatecoop'
       }
 
