@@ -115,6 +115,10 @@ function labels () {
         'labels/:uid': avatar.original || ''
       }[state.route]
 
+      const cover = {
+        'labels/:uid': avatar ? avatar.cover : ''
+      }[state.route]
+
       state.meta = {
         'title': state.title,
         'og:image': image,
@@ -124,7 +128,7 @@ function labels () {
         'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
         'twitter:title': state.title,
-        'twitter:image': image,
+        'twitter:image': cover || image,
         'twitter:site': '@resonatecoop'
       }
 

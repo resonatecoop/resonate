@@ -117,6 +117,10 @@ function artists () {
         'artists/:uid': avatar ? avatar.original : ''
       }[state.route]
 
+      const cover = {
+        'artists/:uid': avatar ? avatar.cover : ''
+      }[state.route]
+
       state.meta = {
         'title': state.title,
         'og:title': state.title,
@@ -126,7 +130,7 @@ function artists () {
         'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
         'twitter:title': state.title,
-        'twitter:image': image,
+        'twitter:image': cover || image,
         'twitter:site': '@resonatecoop'
       }
 
