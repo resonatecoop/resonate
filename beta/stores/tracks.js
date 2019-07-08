@@ -5,7 +5,7 @@
 const logger = require('nanologger')
 const log = logger('store:tracks')
 const adapter = require('@resonate/schemas/adapters/v1/track')
-const storage = require('localforage')
+const setTitle = require('../lib/title')
 const copy = require('clipboard-copy')
 
 module.exports = tracks
@@ -21,6 +21,60 @@ function tracks () {
       emitter.emit('notify', { message: 'Copied to clipboard' })
     })
 
+    emitter.on('tracks:meta', setMeta)
+
+    function setMeta () {
+      const { tid, artwork, name } = state.track.data
+
+      const title = {
+        'tracks/:id': name
+      }[state.route]
+
+      if (!title) return
+
+      state.shortTitle = title
+
+      state.title = setTitle(title)
+      state.shortTitle = title
+
+      const image = {
+        'tracks/:id': artwork.large
+      }[state.route]
+
+      state.meta = {
+        'title': state.title,
+        'og:image': image,
+        'og:title': state.title,
+        'og:type': 'website',
+        'og:url': `https://beta.resonate.is/tracks/${tid}`,
+        'og:description': `Listen to ${name} on Resonate`,
+        'twitter:card': 'summary_large_image',
+        'twitter:title': state.title,
+        'twitter:image': image,
+        'twitter:site': '@resonatecoop'
+      }
+
+      emitter.emit('meta', state.meta)
+    }
+
+    emitter.once('prefetch:track', (id) => {
+      state.track = state.track || {
+        data: {}
+      }
+
+      const request = state.api.tracks.findOne({ id }).then((response) => {
+        if (response.data) {
+          state.track.data = response.data
+        }
+
+        emitter.emit('tracks:meta')
+
+        emitter.emit(state.events.RENDER)
+      })
+
+      if (state.prefetch) state.prefetch.push(request)
+    })
+
     emitter.on('route:tracks/:id', async () => {
       const id = parseInt(state.params.id, 10)
       const isNew = state.track.data.id !== id
@@ -34,19 +88,12 @@ function tracks () {
       emitter.emit(state.events.RENDER)
 
       try {
-        const data = await storage.getItem(`track:${id}`)
-
-        if (data) {
-          state.track = data
-          return emitter.emit(state.events.RENDER)
-        }
-
         const response = await state.api.tracks.findOne({ id })
 
         if (response.data) {
           state.track.data = adapter(response.data)
 
-          storage.setItem(`track:${id}`, state.track)
+          emitter.emit('tracks:meta')
 
           emitter.emit(state.events.RENDER)
         }
