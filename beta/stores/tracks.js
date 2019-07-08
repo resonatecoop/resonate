@@ -13,7 +13,9 @@ module.exports = tracks
 function tracks () {
   return (state, emitter) => {
     state.track = state.track || {
-      data: {}
+      data: {
+        track: {}
+      }
     }
 
     emitter.on('clipboard', (text) => {
@@ -24,7 +26,8 @@ function tracks () {
     emitter.on('tracks:meta', setMeta)
 
     function setMeta () {
-      const { id, artwork, title: trackTitle } = state.track.data
+      const track = state.track.data.track || {}
+      const { id, cover, title: trackTitle } = track
 
       const title = {
         'tracks/:id': trackTitle
@@ -34,22 +37,20 @@ function tracks () {
 
       state.shortTitle = title
 
-      state.title = setTitle(title)
-      state.shortTitle = title
-
+      const fullTitle = setTitle(title)
       const image = {
-        'tracks/:id': artwork.large
+        'tracks/:id': cover
       }[state.route]
 
       state.meta = {
-        'title': state.title,
+        'title': fullTitle,
         'og:image': image,
-        'og:title': state.title,
+        'og:title': fullTitle,
         'og:type': 'website',
         'og:url': `https://beta.resonate.is/tracks/${id}`,
         'og:description': `Listen to ${trackTitle} on Resonate`,
         'twitter:card': 'summary_large_image',
-        'twitter:title': state.title,
+        'twitter:title': fullTitle,
         'twitter:image': image,
         'twitter:site': '@resonatecoop'
       }
@@ -59,12 +60,16 @@ function tracks () {
 
     emitter.once('prefetch:track', (id) => {
       state.track = state.track || {
-        data: {}
+        data: { track: {} }
       }
 
       const request = state.api.tracks.findOne({ id }).then((response) => {
         if (response.data) {
           state.track.data = adapter(response.data)
+
+          if (!state.tracks.length) {
+            state.tracks.push(state.track.data)
+          }
         }
 
         emitter.emit('tracks:meta')
@@ -77,21 +82,30 @@ function tracks () {
 
     emitter.on('route:tracks/:id', async () => {
       const id = Number(state.params.id)
-      const isNew = state.track.data.id !== id
+      const track = state.track.data.track || {}
+      const isNew = track.id !== id
 
-      if (!isNew) return
+      if (isNew) {
+        state.track = {
+          data: {
+            track: {}
+          }
+        }
 
-      state.track = {
-        data: {}
+        emitter.emit(state.events.RENDER)
+      } else {
+        emitter.emit('tracks:meta')
       }
-
-      emitter.emit(state.events.RENDER)
 
       try {
         const response = await state.api.tracks.findOne({ id })
 
         if (response.data) {
           state.track.data = adapter(response.data)
+
+          if (!state.tracks.length) {
+            state.tracks.push(state.track.data)
+          }
 
           emitter.emit('tracks:meta')
 
