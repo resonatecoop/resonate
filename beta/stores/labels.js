@@ -95,7 +95,8 @@ function labels () {
     })
 
     function setMeta () {
-      const { name = '', avatar = {} } = state.label.data
+      const { name, id, avatar, description } = state.label.data
+
       const title = {
         'labels': 'Labels',
         'labels/:uid': name,
@@ -117,6 +118,10 @@ function labels () {
       state.meta = {
         'title': state.title,
         'og:image': image,
+        'og:title': state.title,
+        'og:type': 'website',
+        'og:url': `https://beta.resonate.is/labels/${id}`,
+        'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
         'twitter:title': state.title,
         'twitter:image': image,

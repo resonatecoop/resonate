@@ -123,7 +123,6 @@ function artists () {
         'og:type': 'website',
         'og:url': `https://beta.resonate.is/artists/${id}`,
         'og:image': image,
-        'og:image:type': 'image/jpeg',
         'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
         'twitter:title': state.title,
