@@ -9,6 +9,7 @@ function ArtistsView () {
   return (state, emit) => {
     const artists = state.cache(Artists, 'artists').render({
       items: state.artists.items,
+      filter: true,
       numberOfPages: state.artists.numberOfPages
     })
 

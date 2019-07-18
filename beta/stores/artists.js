@@ -187,9 +187,9 @@ function artists () {
     async function getArtists () {
       emitter.emit('artists:meta')
 
-      const { loader, machine } = state.components['artists']
+      const { machine } = state.components['artists']
       const startLoader = () => {
-        loader.emit('loader:toggle')
+        machine.emit('loader:toggle')
       }
 
       const loaderTimeout = setTimeout(startLoader, 300)
@@ -197,17 +197,20 @@ function artists () {
       try {
         const pageNumber = state.query.page ? Number(state.query.page) : 1
 
-        machine.emit('start')
+        machine.emit('data:start')
+
+        const countries = state.query.countries ? state.query.countries : ''
 
         const response = await state.api.artists.find({
           page: pageNumber - 1,
           limit: 20,
           order: 'desc',
-          order_by: 'id'
+          order_by: 'id',
+          countries
         })
 
-        loader.emit('loader:toggle')
-        machine.emit('resolve')
+        machine.emit('loader:toggle')
+        machine.emit('data:resolve')
 
         if (response.data) {
           state.artists.items = response.data
@@ -216,7 +219,7 @@ function artists () {
 
         emitter.emit(state.events.RENDER)
       } catch (err) {
-        machine.emit('reject')
+        machine.emit('data:reject')
         log.error(err)
       } finally {
         clearTimeout(loaderTimeout)

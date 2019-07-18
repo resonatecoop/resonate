@@ -31,7 +31,7 @@ class Dialog extends Nanocomponent {
 
     return html`
       <dialog class=${prefix}>
-        ${this.title ? html`<h3 class="f4 lh-title">${title}</h3>` : ''}
+        ${title ? html`<h3 class="f4 lh-title">${title}</h3>` : ''}
         <button form="form-dialog" class="absolute top-0 right-0 grow bg-transparent b--transparent dim pa2 ma0" type="submit">
           ${icon('close', { 'class': 'icon icon--sm fill-black' })}
         </button>

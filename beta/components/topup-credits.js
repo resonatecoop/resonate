@@ -12,51 +12,16 @@ const nanologger = require('nanologger')
 const log = nanologger('topup-credits')
 const vatEu = require('../lib/country-codes') // vat eu member states
 
-const iconStyle = css`
-  :host {
-    border: solid 1px var(--mid-gray);
-    width: 28px;
-    height: 28px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-`
-
-const lineStyle = css`
-  :host {
-    border: solid 1px var(--mid-gray);
-  }
-`
-
 const tableStyles = css`
-:host input[type="radio"] {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-:host input[type="radio"]:active ~ label {
-  opacity: 1;
-}
-:host input[type="radio"]:checked ~ label {
-  opacity: 1;
-}
-:host input[type="radio"]:checked ~ label .icon {
-  fill: var(--dark-gray);
-}
-:host label {
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-:host label .icon {
-  fill: transparent;
-}
-:host label:hover {
-  opacity: .5;
-}
+  :host input[type="radio"]:active ~ label {
+    opacity: 1;
+  }
+  :host input[type="radio"]:checked ~ label {
+    opacity: 1;
+  }
+  :host input[type="radio"]:checked ~ label .icon {
+    fill: var(--dark-gray);
+  }
 `
 
 const prices = [
@@ -333,7 +298,7 @@ class Credits extends Component {
             ${currency}${vatAmount.toFixed(2)}
           </div>
         </div>
-        <div class="${lineStyle}"></div>
+        <div class="ba bw b--mid-gray"></div>
         <div class="flex flex-auto pa3">
           <div class="flex w-100 mid-gray flex-auto">
             Total
@@ -389,11 +354,11 @@ class Credits extends Component {
 
       return html`
         <div class="flex w-100 flex-auto">
-          <input onchange=${updateSelection} id=${'amount-' + index} name="amount" type="radio" checked=${amount === self.data.amount} value=${amount} />
-          <label tabindex="0" onkeypress=${handleKeyPress} for=${'amount-' + index}>
+          <input onchange=${updateSelection} id=${'amount-' + index} name="amount" type="radio" class="o-0" style="width:0;height:0;" checked=${amount === self.data.amount} value=${amount} />
+          <label class="flex justify-center items-center w-100 dim" tabindex="0" onkeypress=${handleKeyPress} for=${'amount-' + index}>
             <div class="pa3 flex w-100 flex-auto">
-              <div class="${iconStyle}">
-                ${icon('circle', { 'class': 'icon icon--xs' })}
+              <div class="flex items-center justify-center h2 w2 ba bw b--mid-gray">
+                ${icon('circle', { 'class': 'icon icon--xs fill-transparent' })}
               </div>
             </div>
             <div class="pa3 flex w-100 flex-auto f3">

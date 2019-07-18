@@ -266,6 +266,9 @@ const generateApi = (options) => {
             order_by: {
               type: 'string',
               enum: ['name', 'id']
+            },
+            countries: {
+              type: 'string'
             }
           }
         }
@@ -304,6 +307,17 @@ const generateApi = (options) => {
           type: 'object',
           properties: {
             uid: {
+              type: 'number'
+            }
+          }
+        }
+      },
+      getCountries: {
+        path: '/artists/countries',
+        schema: {
+          type: 'object',
+          properties: {
+            limit: {
               type: 'number'
             }
           }
