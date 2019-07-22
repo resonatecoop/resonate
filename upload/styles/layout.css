@@ -1,0 +1,94 @@
+.dragging {
+  opacity: .5;
+}
+
+.preview::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  top: 0;
+  background:
+  linear-gradient(to top left,
+  rgba(0,0,0,0) 0%,
+  rgba(0,0,0,0) calc(50% - 0.8px),
+  rgba(255, 255, 255,1) 50%,
+  rgba(0,0,0,0) calc(50% + 0.8px),
+  rgba(0,0,0,0) 100%),
+  linear-gradient(to top right,
+  rgba(0,0,0,0) 0%,
+  rgba(0,0,0,0) calc(50% - 0.8px),
+  rgba(255, 255, 255,1) 50%,
+  rgba(0,0,0,0) calc(50% + 0.8px),
+  rgba(0,0,0,0) 100%),
+  #E0E0E0;
+
+}
+
+.dropzone {
+  height: 100%;
+  width: 100%;
+  color: #000;
+  position: absolute;
+}
+
+.dropzone.hover {
+  border: 10px solid #FE5;
+  color: #FE5;
+}
+
+.dropzone.dropped {
+  background: #222;
+  border: 10px solid #444;
+}
+
+.dropzone div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.dropzone label {
+  cursor: pointer;
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.input-file {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  z-index: 1;
+}
+
+.drop-info {
+  font-weight: bold;
+  text-align: center;
+  width: 75%;
+  font-size: 2rem;
+  line-height: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate3D(-50%, -50%, 0);
+}
+
+.drop-info small {
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.dragging {
+  opacity: .8;
+}
