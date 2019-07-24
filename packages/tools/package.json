@@ -10,6 +10,7 @@
     "dependency-check": "^3.3.0",
     "from2-string": "^1.1.0",
     "hstream": "^1.2.0",
+    "jalla": "^0.11.3",
     "lerna": "^3.13.2",
     "postcss-custom-media": "^7.0.7",
     "postcss-import": "^12.0.1",
@@ -18,7 +19,7 @@
     "postcss-reporter": "^6.0.1",
     "resize-observer-polyfill": "^1.5.0",
     "sheetify-postcss": "git+https://github.com/auggod/sheetify-postcss.git",
-    "standard": "^12.0.1",
+    "standard": "13.1.0",
     "tape": "^4.10.1",
     "tape-run": "^5.0.0"
   }
