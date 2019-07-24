@@ -5,3 +5,5 @@
 .fill-gray {       fill: var(--gray); }
 .fill-light-gray { fill: var(--light-gray); }
 .fill-white {      fill: var(--white); }
+.fill-red {        fill: var(--red);}
+.fill-transparent {fill: transparent;}
