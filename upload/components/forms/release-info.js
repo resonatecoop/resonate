@@ -4,9 +4,10 @@ const input = require('@resonate/input-element')
 const button = require('@resonate/button')
 const isEmpty = require('validator/lib/isEmpty')
 const messages = require('./messages')
-// const morph = require('nanomorph')
+const isISO8601 = require('validator/lib/isISO8601')
 const validateFormdata = require('validate-formdata')
 const Uploader = require('../uploader')
+const leftPad = require('left-pad')
 
 class ReleaseForm extends Component {
   constructor (id, state, emit) {
@@ -39,7 +40,9 @@ class ReleaseForm extends Component {
 
     const invalidInput = document.querySelector('.invalid')
 
-    if (invalidInput) invalidInput.focus({ preventScroll: false }) // focus to first invalid input
+    if (invalidInput) {
+      invalidInput.focus({ preventScroll: false }) // focus to first invalid input
+    }
 
     if (this.form.valid) {
       this.emit(this.state.events.PUSHSTATE, '/')
@@ -47,6 +50,7 @@ class ReleaseForm extends Component {
   }
 
   createElement (props) {
+    const self = this
     const pristine = this.form.pristine
     const errors = this.form.errors
     const values = this.form.values
@@ -82,6 +86,70 @@ class ReleaseForm extends Component {
       }
     })
 
+    const month = input({
+      name: 'month',
+      type: 'text',
+      maxlength: 2,
+      classList: 'mw4',
+      placeholder: 'MM',
+      value: values.month,
+      onchange: function (e) {
+        const name = e.target.name
+        const value = leftPad(e.target.value, 2, 0)
+
+        return updateReleaseDate(name, value)
+      }
+    })
+
+    const day = input({
+      name: 'day',
+      type: 'text',
+      maxlength: 2,
+      classList: 'mw4',
+      placeholder: 'DD',
+      value: values.day,
+      onchange: function (e) {
+        const name = e.target.name
+        const value = leftPad(e.target.value, 2, 0)
+
+        return updateReleaseDate(name, value)
+      }
+    })
+
+    const year = input({
+      name: 'year',
+      maxlength: 4,
+      type: 'text',
+      classList: 'mw5',
+      placeholder: 'YYYY',
+      value: values.year,
+      onchange: function (e) {
+        const { name, value } = e.target
+
+        return updateReleaseDate(name, value)
+      }
+    })
+
+    const releaseDate = input({
+      type: 'hidden',
+      name: 'releaseDate',
+      value: values.releaseDate
+    })
+
+    function updateReleaseDate (name, value) {
+      self.validator.validate(name, value)
+
+      const { month, day, year } = values
+      const releaseDate = [year, month, day].filter(Boolean)
+
+      if (releaseDate.length === 3) {
+        self.element.querySelector('input[name=releaseDate]').value = releaseDate.join('-')
+        self.validator.validate('releaseDate', releaseDate.join('-'))
+      }
+
+      self.rerender()
+    }
+
     return html`
       <div class="flex flex-column">
         ${messages(this.state, this.form)}
@@ -94,7 +162,7 @@ class ReleaseForm extends Component {
 
             ${albumArtistInput}
 
-            <p class="ma0 pa0 message warning">${errors.albumArtist && !pristine.albumArtist ? errors.albumArtist.message : ''}</p>
+            <p class="ma0 pa0 red">${errors.albumArtist && !pristine.albumArtist ? errors.albumArtist.message : ''}</p>
           </div>
 
           <div class="mb5">
@@ -104,12 +172,34 @@ class ReleaseForm extends Component {
 
             ${releaseTitleInput}
 
-            <p class="ma0 pa0 message warning">${errors.releaseTitle && !pristine.releaseTitle ? errors.releaseTitle.message : ''}</p>
+            <p class="ma0 pa0 red">${errors.releaseTitle && !pristine.releaseTitle ? errors.releaseTitle.message : ''}</p>
           </div>
 
           <div class="mb5">
             <label for="artwork" class="f4 db mv2">Artwork</label>
             ${uploadArtwork}
+          </div>
+
+          <div class="mb5">
+            <fieldset class="pa0 bn">
+              <legend class="lh-copy mb2 f5">Release date</legend>
+              <div class="flex">
+                <div class="flex flex-auto mr2">
+                  ${month}
+                </div>
+                <div class="flex flex-auto mr2">
+                  ${day}
+                </div>
+                <div class="flex flex-auto">
+                  ${year}
+                </div>
+              </div>
+              ${releaseDate}
+              <p class="ma0 pa0 red">${errors.month && !pristine.month ? errors.month.message : ''}</p>
+              <p class="ma0 pa0 red">${errors.day && !pristine.day ? errors.day.message : ''}</p>
+              <p class="ma0 pa0 red">${errors.year && !pristine.year ? errors.year.message : ''}</p>
+              <p class="ma0 pa0 red">${errors.releaseDate && !pristine.releaseDate ? errors.releaseDate.message : ''}</p>
+            </fieldset>
           </div>
 
           ${button({ type: 'submit', text: 'Continue', style: 'default', size: 'none' })}
@@ -124,6 +214,21 @@ class ReleaseForm extends Component {
     })
     this.validator.field('releaseTitle', (data) => {
       if (isEmpty(data)) return new Error('Release title is required')
+    })
+    this.validator.field('month', (data) => {
+      if (isEmpty(data)) return new Error('Release month is required')
+      if (Number(data) > 12 || Number(data) < 1) return new Error('Release month invalid')
+    })
+    this.validator.field('day', (data) => {
+      if (isEmpty(data)) return new Error('Release day is required')
+      if (Number(data) > 31 || Number(data) < 1) return new Error('Release day invalid')
+    })
+    this.validator.field('year', (data) => {
+      if (isEmpty(data)) return new Error('Release year is required')
+    })
+    this.validator.field('releaseDate', (data) => {
+      if (isEmpty(data)) return new Error('Release date is required')
+      if (!isISO8601(data, { strict: true })) return new Error('Release date is invalid')
     })
   }
 
