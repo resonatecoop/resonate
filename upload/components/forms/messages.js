@@ -20,14 +20,31 @@ module.exports = (state, form) => {
       <h4 class="body-color f4 ma0">Something went wrong.</h4>
       <h5 class="body-color f5 ma0 pv1">Please check the errors in the form and try again.</h5>
       <ul class="flex flex-column list ma0 pa0 ml3 error">
-        ${messages.map(({ message, name }) => html`
-          <li class="flex items-center pv1">
-            ${icon('info', { 'class': 'icon icon--red icon--sm' })}
-            <a href="${state.route}#${name}" class="ml1 link db underline">
-              ${message}
-            </a>
-          </li>
-        `)}
+        ${messages.map(messageItem)}
       </ul>
-    </div>`
+    </div>
+  `
+
+  function messageItem ({ message, name }) {
+    return html`
+      <li class="flex items-center pv1">
+        ${icon('info', { 'class': 'icon fill-red icon--sm' })}
+        <a href="/#${name}" onclick=${handleClick} class="ml1 link db underline">
+          ${message}
+        </a>
+      </li>
+    `
+
+    function handleClick (e) {
+      e.preventDefault()
+      focusToInput(name)
+    }
+  }
+
+  function focusToInput (name) {
+    const invalidInput = document.querySelector(`#${name}`)
+    if (invalidInput) {
+      invalidInput.focus({ preventScroll: false }) // focus to first invalid input
+    }
+  }
 }
