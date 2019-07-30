@@ -2,12 +2,24 @@ const html = require('choo/html')
 const Component = require('choo/component')
 const input = require('@resonate/input-element')
 const button = require('@resonate/button')
-const isEmpty = require('validator/lib/isEmpty')
+const textarea = require('@resonate/textarea-element')
+const icon = require('@resonate/icon-element')
 const messages = require('./messages')
+const Uploader = require('../uploader')
+
+const isEmpty = require('validator/lib/isEmpty')
+const isLength = require('validator/lib/isLength')
 const isISO8601 = require('validator/lib/isISO8601')
 const validateFormdata = require('validate-formdata')
-const Uploader = require('../uploader')
+const ItemsInput = require('../tags-input')
+
 const leftPad = require('left-pad')
+
+const albumTypes = [
+  { value: 'lp', text: 'LP' },
+  { value: 'ep', text: 'EP' },
+  { value: 'single', text: 'Single' }
+]
 
 class ReleaseForm extends Component {
   constructor (id, state, emit) {
@@ -16,6 +28,7 @@ class ReleaseForm extends Component {
     this.emit = emit
     this.state = state
     this.local = state.components[id] = {}
+    this.local.albumType = 'ep'
 
     this.handleSubmit = this.handleSubmit.bind(this)
 
@@ -26,7 +39,8 @@ class ReleaseForm extends Component {
   handleSubmit (e) {
     e.preventDefault()
 
-    for (let field of e.target.elements) {
+    for (const field of e.target.elements) {
+      console.log(field)
       const isRequired = field.required
       const name = field.name || ''
       const value = field.value || ''
@@ -49,22 +63,22 @@ class ReleaseForm extends Component {
     }
   }
 
-  createElement (props) {
+  createElement () {
     const self = this
     const pristine = this.form.pristine
     const errors = this.form.errors
     const values = this.form.values
 
-    const uploadArtwork = this.state.cache(Uploader, 'upload-artwork').render({
+    const uploadArtwork = renderField(this.state.cache(Uploader, 'upload-artwork').render({
       form: this.form,
       validator: this.validator,
       required: true,
       format: { width: 1600, height: 1600 },
       accept: 'image/jpeg,image/jpg,image/png',
       ratio: '1600x1600px'
-    })
+    }), { labelText: 'Artwork', inputName: 'artwork' })
 
-    const albumArtistInput = input({
+    const albumArtistInput = renderField(input({
       type: 'text',
       name: 'albumArtist',
       invalid: errors.albumArtist && !pristine.albumArtist,
@@ -73,9 +87,14 @@ class ReleaseForm extends Component {
         this.validator.validate(e.target.name, e.target.value)
         this.rerender()
       }
+    }), {
+      labelText: 'Album artist',
+      inputName: 'artwork',
+      helpText: 'This may or may not be the same as your profile name.',
+      errors: true
     })
 
-    const releaseTitleInput = input({
+    const releaseTitleInput = renderField(input({
       type: 'text',
       name: 'releaseTitle',
       invalid: errors.releaseTitle && !pristine.releaseTitle,
@@ -84,12 +103,72 @@ class ReleaseForm extends Component {
         this.validator.validate(e.target.name, e.target.value)
         this.rerender()
       }
+    }), {
+      labelText: 'Release title',
+      inputName: 'releaseTitle',
+      helpText: 'The name of this release as you want it to appear publicly.',
+      errors: true
+    })
+
+    const aboutTextarea = renderField(textarea({
+      name: 'about',
+      maxlength: 200,
+      invalid: errors.about && !pristine.about,
+      placeholder: '',
+      required: false,
+      text: values.about,
+      onchange: (e) => {
+        this.validator.validate(e.target.name, e.target.value)
+        this.rerender()
+      }
+    }), {
+      labelText: 'About',
+      inputName: 'about',
+      helpText: 'Tell us a bit about this record.'
+    })
+
+    const genreInput = renderField(this.state.cache(ItemsInput, 'genre-input').render({
+      validator: this.validator,
+      form: this.form,
+      items: [],
+      required: false,
+      inputName: 'genres',
+      placeholder: 'Genre'
+    }), {
+      labelText: 'Genres',
+      inputName: 'genres',
+      helpText: 'Help others discover your music.'
+    })
+
+    const composersInput = renderField(this.state.cache(ItemsInput, 'composers-input').render({
+      validator: this.validator,
+      form: this.form,
+      items: [],
+      required: true,
+      inputName: 'composers',
+      placeholder: 'Artist name'
+    }), {
+      labelText: 'Composers',
+      inputName: 'performers',
+      helpText: 'List the writers who composed this release.'
+    })
+
+    const performersInput = renderField(this.state.cache(ItemsInput, 'performers-input').render({
+      validator: this.validator,
+      form: this.form,
+      items: [],
+      required: true,
+      inputName: 'performers',
+      placeholder: 'Artist name'
+    }), {
+      labelText: 'Performers',
+      inputName: 'performers',
+      helpText: 'List additional performers featured on this release.'
     })
 
     const month = input({
       name: 'month',
-      type: 'text',
-      maxlength: 2,
+      type: 'number',
       classList: 'mw4',
       placeholder: 'MM',
       value: values.month,
@@ -103,8 +182,7 @@ class ReleaseForm extends Component {
 
     const day = input({
       name: 'day',
-      type: 'text',
-      maxlength: 2,
+      type: 'number',
       classList: 'mw4',
       placeholder: 'DD',
       value: values.day,
@@ -118,8 +196,7 @@ class ReleaseForm extends Component {
 
     const year = input({
       name: 'year',
-      maxlength: 4,
-      type: 'text',
+      type: 'number',
       classList: 'mw5',
       placeholder: 'YYYY',
       value: values.year,
@@ -136,6 +213,14 @@ class ReleaseForm extends Component {
       value: values.releaseDate
     })
 
+    const submitButton = button({
+      type: 'submit',
+      prefix: 'bg-white ba bw b--dark-gray f5 b pv3 ph5 grow',
+      text: 'Continue',
+      style: 'none',
+      size: 'none'
+    })
+
     function updateReleaseDate (name, value) {
       self.validator.validate(name, value)
 
@@ -150,35 +235,65 @@ class ReleaseForm extends Component {
       self.rerender()
     }
 
+    function renderAlbumTypesInputs (items) {
+      /* eslint-disable indent */
+
+      return items.map(({ value, text }) => html`
+        <div>
+          <input
+            type=radio
+            name="releaseType"
+            id=${value}
+            checked=${self.local.albumType === value}
+            value=${value}
+            class="o-0"
+            style="width:0;height:0;"
+            onchange=${(e) => {
+              self.local.albumType = e.target.value
+              self.rerender()
+            }}>
+
+          <label class="flex justify-center items-center w-100 dim" for=${value}>
+            <div class="flex w-100 flex-auto">
+              <div class="flex items-center justify-center h1 w1 ba bw b--mid-gray">
+                ${icon('circle', { class: 'icon icon--xxs fill-transparent' })}
+              </div>
+              <div class="flex items-center ph3 f5 lh-copy">
+                ${text}
+              </div>
+            </div>
+          </label>
+        </div>
+      `)
+    }
+
+    function renderField (inputComponent, options) {
+      const { labelText, inputName, helpText, errors } = options
+
+      return html`
+        <div class="mb5">
+          <label for=${inputName} class="f4 db mv2">${labelText}</label>
+          ${helpText ? html`<p class="lh-copy f5">${helpText}</p>` : ''}
+          ${inputComponent}
+          ${errors ? html`<p class="lh-copy f5 red">${errors[inputName] && !pristine[inputName] ? errors[inputName].message : ''}</p>` : ''}
+        </div>
+      `
+    }
+
     return html`
-      <div class="flex flex-column">
+      <div class="flex flex-column pb6">
         ${messages(this.state, this.form)}
 
         <form novalidate onsubmit=${this.handleSubmit}>
-          <div class="mb5">
-            <label for="albumArtist" class="f4 db mv2">Album artist</label>
+          ${albumArtistInput}
 
-            <p>This may or may not be the same as your profile name.</p>
+          ${releaseTitleInput}
 
-            ${albumArtistInput}
+          ${uploadArtwork}
 
-            <p class="ma0 pa0 red">${errors.albumArtist && !pristine.albumArtist ? errors.albumArtist.message : ''}</p>
-          </div>
+          ${aboutTextarea}
 
-          <div class="mb5">
-            <label for="releaseTitle" class="f4 db mv2">Release title</label>
-
-            <p>The name of this release as you want it to appear publicly.</p>
-
-            ${releaseTitleInput}
-
-            <p class="ma0 pa0 red">${errors.releaseTitle && !pristine.releaseTitle ? errors.releaseTitle.message : ''}</p>
-          </div>
-
-          <div class="mb5">
-            <label for="artwork" class="f4 db mv2">Artwork</label>
-            ${uploadArtwork}
-          </div>
+          ${genreInput}
 
           <div class="mb5">
             <fieldset class="pa0 bn">
@@ -195,14 +310,27 @@ class ReleaseForm extends Component {
                 </div>
               </div>
               ${releaseDate}
-              <p class="ma0 pa0 red">${errors.month && !pristine.month ? errors.month.message : ''}</p>
-              <p class="ma0 pa0 red">${errors.day && !pristine.day ? errors.day.message : ''}</p>
-              <p class="ma0 pa0 red">${errors.year && !pristine.year ? errors.year.message : ''}</p>
-              <p class="ma0 pa0 red">${errors.releaseDate && !pristine.releaseDate ? errors.releaseDate.message : ''}</p>
+              <p class="lh-copy f5 red">${errors.month && !pristine.month ? errors.month.message : ''}</p>
+              <p class="lh-copy f5 red">${errors.day && !pristine.day ? errors.day.message : ''}</p>
+              <p class="lh-copy f5 red">${errors.year && !pristine.year ? errors.year.message : ''}</p>
+              <p class="lh-copy f5 red">${errors.releaseDate && !pristine.releaseDate ? errors.releaseDate.message : ''}</p>
             </fieldset>
           </div>
 
-          ${button({ type: 'submit', text: 'Continue', style: 'default', size: 'none' })}
+          <div class="mb5">
+            <fieldset class="pa0 bn">
+              <legend class="f4 db mb2">Album type</legend>
+              <div class="flex">
+                ${renderAlbumTypesInputs(albumTypes)}
+              </div>
+            </fieldset>
+          </div>
+
+          ${performersInput}
+
+          ${composersInput}
+
+          ${submitButton}
         </form>
       </div>
     `
@@ -211,6 +339,9 @@ class ReleaseForm extends Component {
   load () {
     this.validator.field('albumArtist', (data) => {
       if (isEmpty(data)) return new Error('Album artist is required')
+    })
+    this.validator.field('about', { required: false }, (data) => {
+      if (!isLength(data, { min: 0, max: 200 })) return new Error('Bio should be no more than 200 characters')
     })
     this.validator.field('releaseTitle', (data) => {
       if (isEmpty(data)) return new Error('Release title is required')
@@ -233,7 +364,7 @@ class ReleaseForm extends Component {
   }
 
   update () {
-    return true
+    return false
   }
 }
 

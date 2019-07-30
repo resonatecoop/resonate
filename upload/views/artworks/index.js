@@ -1,13 +1,17 @@
 const html = require('choo/html')
 const Layout = require('../../elements/layout')
-const Releases = require('../../components/releases')
+const Artworks = require('../../components/artworks')
 
 module.exports = Layout(view)
+
+/**
+ * Complete list of artist tracks (with play and favorite counts)
+ */
 
 function view (state, emit) {
   return html`
     <div class="flex flex-column w-100 mh3 mh0-ns">
-      ${state.cache(Releases, 'releases').render({ items: state.releases.items })}
+      ${state.cache(Artworks, 'artworks').render({ items: state.artworks.items })}
     </div>
   `
 }

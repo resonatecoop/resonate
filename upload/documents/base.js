@@ -3,7 +3,7 @@ const getBase = require('../lib/base')
 
 module.exports = function () {
   return hyperstream({
-    'head': {
+    head: {
       _appendHtml: `<base href="${getBase('/')}"></base>`
     }
   })
