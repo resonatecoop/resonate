@@ -55,6 +55,7 @@
     "@resonate/link-element": "file:../packages/link-element",
     "@resonate/schemas": "file:../packages/schemas",
     "@resonate/tachyons": "file:../packages/tachyons",
+    "@resonate/textarea-element": "file:../packages/textarea-element",
     "@resonate/theme-skins": "file:../packages/theme-skins",
     "babel-polyfill": "^6.26.0",
     "choo": "^6.13.1",
