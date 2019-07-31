@@ -5,6 +5,7 @@ const promiseHash = require('promise-hash/lib/promise-hash')
 const setTitle = require('../lib/title')
 
 const storage = require('localforage')
+
 storage.config({
   name: 'resonate',
   version: 1.0,
@@ -12,6 +13,7 @@ storage.config({
   storeName: 'app', // Should be alphanumeric, with underscores.
   description: 'Resonate storage'
 })
+
 const generateApi = require('../lib/api')
 const adapter = require('@resonate/schemas/adapters/v1/track')
 
@@ -114,6 +116,7 @@ function app () {
         events.emit('loader:on')
       }
       const loaderTimeout = setTimeout(startLoader, 300)
+
       try {
         const user = await storage.getItem('user')
         const pageNumber = state.query.page ? Number(state.query.page) : 1
@@ -186,7 +189,7 @@ function app () {
       }
     })
 
-    emitter.on('route:login', async () => {
+    emitter.on('route:login', () => {
       if (state.api.token) {
         log.info(`Redirecting to /`)
         emitter.emit(state.events.PUSHSTATE, '/')
@@ -215,6 +218,8 @@ function app () {
             emitter.emit('api:ok')
 
             emitter.emit(state.events.RENDER)
+          } else {
+            emitter.emit('logout')
           }
         } else {
           state.api = generateApi()
@@ -252,8 +257,11 @@ function app () {
 
       emitter.on('api:ok', () => {
         state.resolved = true
+
         emitter.emit(state.events.RENDER)
+
         log.info('api ok')
+
         emitter.emit(`route:${state.route}`)
       })
     })
@@ -265,21 +273,37 @@ function app () {
     })
 
     emitter.on('credits:set', async (credits) => {
-      const user = await storage.getItem('user')
-      user.credits = credits
-      state.user = user
-      await storage.setItem('user', user)
-      emitter.emit('notify', { timeout: 3000, message: 'You credits have been topped up' })
-      emitter.emit(state.events.RENDER)
+      try {
+        const user = await storage.getItem('user')
+
+        if (user) {
+          user.credits = credits
+          state.user = user
+
+          await storage.setItem('user', user)
+
+          emitter.emit('notify', { timeout: 3000, message: 'You credits have been topped up' })
+          emitter.emit(state.events.RENDER)
+        }
+      } catch (err) {
+        emitter.emit('notify', { timeout: 3000, message: 'Something went wrong. Please refresh the page.' })
+
+        log.error(err)
+      }
     })
 
-    emitter.on('storage:clear', () => {
-      storage.clear()
-      const timeout = 3000
-      emitter.emit('notify', { timeout, message: 'Cache cleared. Reloading...' })
-      setTimeout(() => {
-        window.location.reload()
-      }, timeout)
+    emitter.on('storage:clear', async () => {
+      try {
+        await storage.clear()
+
+        emitter.emit('notify', { timeout: 3000, message: 'Cache cleared. Reloading...' })
+
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
+      } catch (err) {
+        log.error(err)
+      }
     })
   }
 }

@@ -12,6 +12,17 @@ function releases () {
       data: {}
     }
 
+    emitter.on('releases:create', async (data) => {
+      try {
+        const response = await state.api.releases.create(data)
+        const { id } = response.data
+
+        emitter.emit(state.events.PUSHSTATE, `/releases/${id}`)
+      } catch (err) {
+        console.log('err')
+      }
+    })
+
     emitter.on('route:releases/:id', async () => {
       if (state.release.data.id !== state.params.id) {
         state.release.data = {}

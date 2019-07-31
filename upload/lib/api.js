@@ -79,8 +79,45 @@ const generateApi = (options) => {
         schema: {
           type: 'object',
           properties: {
+            album_artist: {
+              type: 'string'
+            },
             release_title: {
               type: 'string'
+            },
+            artwork: {
+              type: 'string',
+              format: 'uuid'
+            },
+            about: {
+              type: 'string',
+              maxLength: 200
+            },
+            genres: {
+              type: 'array',
+              items: {
+                type: 'string'
+              }
+            },
+            release_date: {
+              type: 'string',
+              format: 'date'
+            },
+            type: {
+              type: 'string',
+              enum: ['lp', 'ep', 'single']
+            },
+            performers: {
+              type: 'array',
+              items: {
+                type: 'string'
+              }
+            },
+            composers: {
+              type: 'array',
+              items: {
+                type: 'string'
+              }
             }
           }
         }

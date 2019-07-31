@@ -142,6 +142,10 @@ const generateApi = (options) => {
           properties: {
             uid: {
               type: 'number'
+            },
+            access_token: {
+              type: 'string',
+              format: 'uuid'
             }
           }
         }

@@ -6,6 +6,7 @@ const textarea = require('@resonate/textarea-element')
 const icon = require('@resonate/icon-element')
 const messages = require('./messages')
 const Uploader = require('../uploader')
+const serialize = require('form-serialize')
 
 const isEmpty = require('validator/lib/isEmpty')
 const isLength = require('validator/lib/isLength')
@@ -40,7 +41,6 @@ class ReleaseForm extends Component {
     e.preventDefault()
 
     for (const field of e.target.elements) {
-      console.log(field)
       const isRequired = field.required
       const name = field.name || ''
       const value = field.value || ''
@@ -59,7 +59,18 @@ class ReleaseForm extends Component {
     }
 
     if (this.form.valid) {
-      this.emit(this.state.events.PUSHSTATE, '/')
+      const form = this.element.querySelector('form')
+      const formData = serialize(form, { hash: true })
+
+      const data = {}
+
+      if (formData.genres) {
+        data.genres = formData.genres.split(',').map((item) => item.trim().filter(Boolean))
+      }
+
+      console.log(data)
+
+      // this.emit('releases:create', data)
     }
   }
 
@@ -80,34 +91,34 @@ class ReleaseForm extends Component {
 
     const albumArtistInput = renderField(input({
       type: 'text',
-      name: 'albumArtist',
-      invalid: errors.albumArtist && !pristine.albumArtist,
-      value: values.albumArtist,
+      name: 'album_artist',
+      invalid: errors['album_artist'] && !pristine['album_artist'],
+      value: values['album_artist'],
       onchange: (e) => {
         this.validator.validate(e.target.name, e.target.value)
         this.rerender()
       }
     }), {
       labelText: 'Album artist',
-      inputName: 'artwork',
+      inputName: 'album_artist',
       helpText: 'This may or may not be the same as your profile name.',
-      errors: true
+      displayErrors: true
     })
 
     const releaseTitleInput = renderField(input({
       type: 'text',
-      name: 'releaseTitle',
-      invalid: errors.releaseTitle && !pristine.releaseTitle,
-      value: values.releaseTitle,
+      name: 'release_title',
+      invalid: errors['release_title'] && !pristine['release_title'],
+      value: values['release_title'],
       onchange: (e) => {
         this.validator.validate(e.target.name, e.target.value)
         this.rerender()
       }
     }), {
       labelText: 'Release title',
-      inputName: 'releaseTitle',
+      inputName: 'release_title',
       helpText: 'The name of this release as you want it to appear publicly.',
-      errors: true
+      displayErrors: true
     })
 
     const aboutTextarea = renderField(textarea({
@@ -124,7 +135,8 @@ class ReleaseForm extends Component {
     }), {
       labelText: 'About',
       inputName: 'about',
-      helpText: 'Tell us a bit about this record.'
+      helpText: 'Tell us a bit about this record.',
+      displayErrors: true
     })
 
     const genreInput = renderField(this.state.cache(ItemsInput, 'genre-input').render({
@@ -209,8 +221,8 @@ class ReleaseForm extends Component {
 
     const releaseDate = input({
       type: 'hidden',
-      name: 'releaseDate',
-      value: values.releaseDate
+      name: 'release_date',
+      value: values['release_date']
     })
 
     const submitButton = button({
@@ -228,8 +240,8 @@ class ReleaseForm extends Component {
       const releaseDate = [year, month, day].filter(Boolean)
 
       if (releaseDate.length === 3) {
-        self.element.querySelector('input[name=releaseDate]').value = releaseDate.join('-')
-        self.validator.validate('releaseDate', releaseDate.join('-'))
+        self.element.querySelector('input[name=release_date]').value = releaseDate.join('-')
+        self.validator.validate('release_date', releaseDate.join('-'))
       }
 
       self.rerender()
@@ -268,14 +280,14 @@ class ReleaseForm extends Component {
     }
 
     function renderField (inputComponent, options) {
-      const { labelText, inputName, helpText, errors } = options
+      const { labelText, inputName, helpText, displayErrors } = options
 
       return html`
         <div class="mb5">
           <label for=${inputName} class="f4 db mv2">${labelText}</label>
           ${helpText ? html`<p class="lh-copy f5">${helpText}</p>` : ''}
           ${inputComponent}
-          ${errors ? html`<p class="lh-copy f5 red">${errors[inputName] && !pristine[inputName] ? errors[inputName].message : ''}</p>` : ''}
+          ${displayErrors ? html`<p class="lh-copy f5 red">${errors[inputName] && !pristine[inputName] ? errors[inputName].message : ''}</p>` : ''}
         </div>
       `
     }
@@ -313,7 +325,7 @@ class ReleaseForm extends Component {
               <p class="lh-copy f5 red">${errors.month && !pristine.month ? errors.month.message : ''}</p>
               <p class="lh-copy f5 red">${errors.day && !pristine.day ? errors.day.message : ''}</p>
               <p class="lh-copy f5 red">${errors.year && !pristine.year ? errors.year.message : ''}</p>
-              <p class="lh-copy f5 red">${errors.releaseDate && !pristine.releaseDate ? errors.releaseDate.message : ''}</p>
+              <p class="lh-copy f5 red">${errors['release_date'] && !pristine['release_date'] ? errors['release_date'].message : ''}</p>
             </fieldset>
           </div>
 
@@ -337,13 +349,13 @@ class ReleaseForm extends Component {
   }
 
   load () {
-    this.validator.field('albumArtist', (data) => {
+    this.validator.field('album_artist', (data) => {
       if (isEmpty(data)) return new Error('Album artist is required')
     })
     this.validator.field('about', { required: false }, (data) => {
       if (!isLength(data, { min: 0, max: 200 })) return new Error('Bio should be no more than 200 characters')
     })
-    this.validator.field('releaseTitle', (data) => {
+    this.validator.field('release_title', (data) => {
       if (isEmpty(data)) return new Error('Release title is required')
     })
     this.validator.field('month', (data) => {
@@ -357,7 +369,7 @@ class ReleaseForm extends Component {
     this.validator.field('year', (data) => {
       if (isEmpty(data)) return new Error('Release year is required')
     })
-    this.validator.field('releaseDate', (data) => {
+    this.validator.field('release_date', (data) => {
       if (isEmpty(data)) return new Error('Release date is required')
       if (!isISO8601(data, { strict: true })) return new Error('Release date is invalid')
     })
