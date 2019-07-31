@@ -105,7 +105,7 @@ class Login extends Component {
       const consent = cookies.get('cookieconsent_status')
 
       if (consent === 'allow') {
-        await this.state.api.auth.tokens({ uid: user.uid })
+        await this.state.api.auth.tokens({ uid: user.uid, access_token: token })
       }
 
       log.info('Successfull login')
