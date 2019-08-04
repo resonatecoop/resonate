@@ -12,14 +12,39 @@ function releases () {
       data: {}
     }
 
-    emitter.on('releases:create', async (data) => {
+    emitter.on('route:releases/:id/update', async () => {
+      if (state.release.data.id !== state.params.id) {
+        state.release.data = {}
+        emitter.emit(state.events.RENDER)
+      }
       try {
-        const response = await state.api.releases.create(data)
-        const { id } = response.data
+        const response = await state.api.releases.findOne({
+          id: state.params.id
+        })
 
-        emitter.emit(state.events.PUSHSTATE, `/releases/${id}`)
+        state.release.data = response.data
+
+        emitter.emit(state.events.RENDER)
       } catch (err) {
-        console.log('err')
+        console.log(err)
+      }
+    })
+
+    emitter.on('route:releases/:id/tracks', async () => {
+      if (state.release.data.id !== state.params.id) {
+        state.release.data = {}
+        emitter.emit(state.events.RENDER)
+      }
+      try {
+        const response = await state.api.releases.findOne({
+          id: state.params.id
+        })
+
+        state.release.data = response.data
+
+        emitter.emit(state.events.RENDER)
+      } catch (err) {
+        console.log(err)
       }
     })
 

@@ -159,10 +159,6 @@ class Tracks extends Component {
 
     return html`
       <div>
-        <h2 class="f3 fw4 pa3 mv0">Tracks</h2>
-        <div class="cf pa2">
-        </div>
-
         <div class="mw6 center">
           ${this.items.map(trackItem)}
         </div>

@@ -25,7 +25,7 @@ class Releases extends Component {
     this.log = nanologger(id)
 
     this.local.machine = nanostate('idle', {
-      idle: { start: 'loading', resolve: 'data' },
+      idle: { start: 'loading' },
       loading: { resolve: 'idle', reject: 'error' },
       error: { start: 'idle' }
     })

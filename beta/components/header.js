@@ -14,15 +14,6 @@ const BASE_URL = 'https://' + SITE_DOMAIN
 const STRIPE_URL = 'https://js.stripe.com/v3/'
 const loadScript = require('../lib/load-script')
 
-const css = require('sheetify')
-
-const dropdownMenuStyle = css`
-  :host {
-    width: 100vw;
-    max-width: 24rem;
-  }
-`
-
 const {
   background: bg,
   foreground: fg,
@@ -208,7 +199,7 @@ class Header extends Nanocomponent {
 
       if (user.uid) {
         return html`
-          <ul class="${dropdownMenuStyle} ${fg} list ma0 pa2 absolute right-0 dropdown z-max" style="left:auto;">
+          <ul class="${fg} list ma0 pa2 absolute right-0 dropdown z-max" style="left:auto;width:100vw;max-width:24rem;">
             <li class="flex items-start">
               <div class="flex flex-column pa2 w-100">
                 Credits

@@ -62,7 +62,7 @@ const generateApi = (options) => {
         }
       },
       findOne: {
-        path: '/releases',
+        path: '/releases/[:id]',
         schema: {
           type: 'object',
           properties: {
@@ -75,17 +75,21 @@ const generateApi = (options) => {
       },
       create: {
         path: '/releases',
-        method: 'POST',
+        options: {
+          method: 'POST'
+        },
         schema: {
           type: 'object',
+          additionalProperties: false,
+          required: ['title', 'type', 'display_artist', 'release_date', 'cover', 'composers', 'performers'],
           properties: {
-            album_artist: {
+            display_artist: {
               type: 'string'
             },
-            release_title: {
+            title: {
               type: 'string'
             },
-            artwork: {
+            cover: {
               type: 'string',
               format: 'uuid'
             },
@@ -93,7 +97,7 @@ const generateApi = (options) => {
               type: 'string',
               maxLength: 200
             },
-            genres: {
+            tags: {
               type: 'array',
               items: {
                 type: 'string'

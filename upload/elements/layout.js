@@ -6,11 +6,11 @@ function Layout (view) {
   return (state, emit) => {
     const header = state.cache(Header, 'header').render({
       href: state.href,
-      user: state.user.data || {}
+      user: state.user
     })
 
     const login = () => state.cache(Login, 'login').render({
-      user: state.user.data || {}
+      user: state.user
     })
 
     return html`

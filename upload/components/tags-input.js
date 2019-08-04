@@ -4,6 +4,8 @@ const validateFormdata = require('validate-formdata')
 const input = require('@resonate/input-element')
 const isEmpty = require('validator/lib/isEmpty')
 const button = require('@resonate/button')
+const compare = require('nanocomponent/compare')
+const noop = () => {}
 
 class ItemsInput extends Component {
   constructor (id, state, emit) {
@@ -13,10 +15,10 @@ class ItemsInput extends Component {
     this.state = state
     this.local = state.components[id] = {}
 
+    this.local.items = []
+
     this.removeItem = this.removeItem.bind(this)
     this.addItem = this.addItem.bind(this)
-
-    this.local.items = []
 
     this.validator = validateFormdata()
     this.form = this.validator.state
@@ -33,6 +35,7 @@ class ItemsInput extends Component {
       errors: {}
     }
 
+    this.changed = props.onchange || noop
     this.local.items = props.items || []
     this.local.inputName = props.inputName || 'tags'
     this.local.required = props.required
@@ -41,18 +44,19 @@ class ItemsInput extends Component {
     const pristine = this.form.pristine
     const errors = this.form.errors
     const values = this.form.values
+
     const items = this.local.items.map((item, index) => {
       const _button = button({
         onClick: (e) => this.removeItem(index),
-        prefix: 'bg-transparent bn absolute right-0 mr1 grow',
+        prefix: 'bg-transparent bn ml2 pa0 grow',
         iconName: 'close-fat',
-        iconSize: 'xs',
+        iconSize: 'xxs',
         style: 'none',
         size: 'none'
       })
       return html`
-        <li class="flex items-center bg-black-10 relative pv1 pl2 pr4 mr2 mb2">
-          ${item}
+        <li class="flex items-center bg-black-10 mr2 mb2 ph2 pv2">
+          <span class="f5">${item}</span>
           ${_button}
         </li>
       `
@@ -111,15 +115,14 @@ class ItemsInput extends Component {
       if (this.local.required && isEmpty(data)) {
         return new Error(`Adding ${this.local.inputName} is required`)
       }
-      if (this.local.items.includes(data)) {
-        return new Error('Item already exists')
-      }
     })
   }
 
   removeItem (index) {
     if (index > -1) {
       this.local.items.splice(index, 1)
+      this.form.values[this.local.inputName] = ''
+      this.changed(this.local.items)
       this.rerender()
     }
   }
@@ -127,12 +130,15 @@ class ItemsInput extends Component {
   addItem (value, error) {
     if (value && !this.local.items.includes(value) && !error) {
       this.local.items.push(value)
+      this.form.values[this.local.inputName] = ''
+      this.changed(this.local.items)
       this.rerender()
     }
   }
 
   update (props) {
-    return props.form.changed
+    return props.form.changed ||
+      compare(props.items, this.local.items)
   }
 }
 

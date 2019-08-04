@@ -118,7 +118,6 @@ function app () {
       const loaderTimeout = setTimeout(startLoader, 300)
 
       try {
-        const user = await storage.getItem('user')
         const pageNumber = state.query.page ? Number(state.query.page) : 1
 
         machine.emit('start')
@@ -127,7 +126,11 @@ function app () {
 
         if (typeof request !== 'function') return
 
-        const response = await request({ uid: user.uid, limit: 50, page: pageNumber - 1 })
+        const response = await request({
+          uid: state.user.uid,
+          limit: 50,
+          page: pageNumber - 1
+        })
 
         events.state.loader === 'on' && events.emit('loader:off')
 
