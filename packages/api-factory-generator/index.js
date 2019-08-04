@@ -25,18 +25,19 @@ const request = (path = '/', options = {}) => {
     token
   } = options
 
+  const params = path.match(new RegExp(/\[:(.*?)\]/))
+
+  const queryStringData = Object.assign({}, data)
+
+  if (params) {
+    delete queryStringData[params[1]]
+  }
+
   if (clientId) {
-    data.client_id = clientId
+    queryStringData.client_id = clientId
   }
 
-  const param = path.match(new RegExp(/\[:(.*?)\]/)) // TODO handle multiple params
-  const params = []
-
-  if (param) {
-    params.push(param[1])
-  }
-
-  const stringified = queryString.stringify(method === 'GET' ? data : { client_id: clientId })
+  const stringified = queryString.stringify(method === 'GET' ? queryStringData : { client_id: clientId })
 
   let body
 
@@ -48,7 +49,7 @@ const request = (path = '/', options = {}) => {
     scheme,
     domain,
     prefix,
-    param ? path.replace(param[0], data[param[1]]) : path,
+    params ? path.replace(params[0], data[params[1]]) : path,
     stringified ? '?' + stringified : false
   ]
     .filter(Boolean)
@@ -89,7 +90,7 @@ const request = (path = '/', options = {}) => {
 const computeRoutes = (routes, options = {}) => {
   const obj = {}
 
-  for (let [key, route] of Object.entries(routes)) {
+  for (const [key, route] of Object.entries(routes)) {
     if (route.path) {
       let schema
       let params
@@ -118,10 +119,9 @@ const computeRoutes = (routes, options = {}) => {
           }
         }
         if (validate) {
-          let valid = validate(data)
+          const valid = validate(data)
           if (!valid) {
-            let errors = validate.errors
-            throw errors
+            throw validate.errors
           }
         }
         return request(route.path, Object.assign({}, { data }, options, route.options))
