@@ -1,21 +1,27 @@
 services:
-  web:
+  webapp:
+    container_name: webapp
     build:
-      context: ./
+      context: "."
       dockerfile: Dockerfile
+    command: "sh -c 'npm run start:app'"
     restart: always
     depends_on:
       - nginx
+    cap_add:
+      - SYS_ADMIN # Needed for mount
     volumes:
-      - beta_files:/var/www/app/
+      - webapp_files:/var/www/:rshared # recursive shared mount
+    ports: 
+      - "8080:8080"
   nginx:
     container_name: webserver
-    image: nginx-alpine
+    image: nginx:1.13.12-alpine
     ports:
       - "80:80"
       - "443:443"
     environment:
       - NGINX_PORT=80
     volumes:
-      - web_files:/var/www/app/
+      - webapp_files:/var/www/:rshared # recursive shared mount
 version: '3.7'

@@ -1,1 +1,13 @@
-.dockerignore
+*/
+
+# add project directories to include here
+!package.json
+!lerna.json
+!.npmrc
+!/embed
+!/beta
+!/packages/**
+
+# exclude these even in the included project directories
+node_modules
+.git
