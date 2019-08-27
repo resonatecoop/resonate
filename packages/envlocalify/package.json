@@ -1,6 +1,6 @@
 {
   "name": "@resonate/envlocalify",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Bundle env variables",
   "main": "index.js",
   "scripts": {

@@ -28,7 +28,7 @@ function streamCosts (props) {
       <div class="flex flex-column">
         <div class="flex items-center green pv2">
           <span class="ph2">
-            ${icon('token', { 'class': 'icon icon--sm fill--light-gray' })}
+            ${icon('token', { class: 'icon icon--sm fill--light-gray' })}
           </span>
           <span class="ph2">
             ${renderCost(count, status)}
@@ -36,7 +36,7 @@ function streamCosts (props) {
         </div>
         <div class="flex items-center yellow pv2">
           <span class="ph2">
-            ${icon('token', { 'class': 'icon icon--sm fill-light-gray' })}
+            ${icon('token', { class: 'icon icon--sm fill-light-gray' })}
           </span>
           <span class="ph2">
             ${renderCost(count + 1, status)}

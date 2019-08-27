@@ -1,6 +1,6 @@
 {
   "name": "@resonate/dialog-component",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Dialog element component",
   "main": "index.js",
   "scripts": {

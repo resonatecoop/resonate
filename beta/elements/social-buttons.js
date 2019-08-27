@@ -19,7 +19,7 @@ module.exports = (items) => {
       return html`
         <li>
           <a target="_blank" rel="noopener noreferer" href="${url}" class="flex items-center f7 pv2 color-inherit">
-            ${icon(name, { 'class': 'icon icon--xs fill-black fill-white--dark' })}
+            ${icon(name, { class: 'icon icon--xs fill-black fill-white--dark' })}
             <span class="pl2">${title}</span>
           </a>
         </li>

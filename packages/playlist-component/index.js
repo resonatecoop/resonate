@@ -35,9 +35,9 @@ class Playlist extends Component {
     this.renderPlaceholder = this.renderPlaceholder.bind(this)
 
     this.local.machine = nanostate('idle', {
-      idle: { 'start': 'loading' },
-      loading: { 'resolve': 'idle', reject: 'error' },
-      error: { 'start': 'idle' }
+      idle: { start: 'loading' },
+      loading: { resolve: 'idle', reject: 'error' },
+      error: { start: 'idle' }
     })
 
     this.local.machine.event('notFound', nanostate('notFound', {
@@ -46,8 +46,8 @@ class Playlist extends Component {
 
     this.local.events = nanostate.parallel({
       loader: nanostate('off', {
-        on: { 'off': 'off' },
-        off: { 'on': 'on' }
+        on: { off: 'off' },
+        off: { on: 'on' }
       })
     })
 
@@ -85,7 +85,7 @@ class Playlist extends Component {
 
     const playlist = {
       loading: {
-        'on': this.renderLoader
+        on: this.renderLoader
       }[this.local.events.state.loader],
       error: this.renderError,
       notFound: this.renderPlaceholder
@@ -150,15 +150,15 @@ class Playlist extends Component {
 
   renderPlaceholder () {
     const message = {
-      'owned': 'You don\'t own any tracks yet',
-      'favorites': 'You don\'t have any favorites',
-      'history': 'You haven\'t played any tracks yet'
+      owned: 'You don\'t own any tracks yet',
+      favorites: 'You don\'t have any favorites',
+      history: 'You haven\'t played any tracks yet'
     }[this.type] || 'No tracks to display'
 
     return html`
       <div class="flex flex-column">
         <div class="flex justify-center items-center mt3">
-          ${icon('info', { 'class': `icon icon--sm ${iconFill}` })}
+          ${icon('info', { class: `icon icon--sm ${iconFill}` })}
           <p class="lh-copy pl3">${message}</p>
         </div>
       </div>

@@ -31,18 +31,18 @@ class MenuItem {
     this.menu = menuObj
 
     this.keyCode = Object.freeze({
-      'TAB': 9,
-      'RETURN': 13,
-      'ESC': 27,
-      'SPACE': 32,
-      'PAGEUP': 33,
-      'PAGEDOWN': 34,
-      'END': 35,
-      'HOME': 36,
-      'LEFT': 37,
-      'UP': 38,
-      'RIGHT': 39,
-      'DOWN': 40
+      TAB: 9,
+      RETURN: 13,
+      ESC: 27,
+      SPACE: 32,
+      PAGEUP: 33,
+      PAGEDOWN: 34,
+      END: 35,
+      HOME: 36,
+      LEFT: 37,
+      UP: 38,
+      RIGHT: 39,
+      DOWN: 40
     })
   }
 
@@ -78,9 +78,9 @@ class MenuItem {
         // and let the event handler handleClick do the housekeeping.
         try {
           clickEvent = new window.MouseEvent('click', {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true
+            view: window,
+            bubbles: true,
+            cancelable: true
           })
         } catch (err) {
           if (document.createEvent) {

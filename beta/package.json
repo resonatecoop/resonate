@@ -83,7 +83,7 @@
     "babel-polyfill": "^6.26.0",
     "browser-cookies": "^1.2.0",
     "browser-or-node": "^1.1.0",
-    "choo": "^6.13.0",
+    "choo": "7.0.0",
     "choo-devtools": "^2.5.1",
     "choo-meta": "^1.0.4",
     "choo-notification": "^1.0.0",

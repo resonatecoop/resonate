@@ -12,8 +12,8 @@ class FavButton extends Nanocomponent {
 
     this.machine = nanostate.parallel({
       fav: nanostate(fav ? 'on' : 'off', {
-        on: { 'toggle': 'off' },
-        off: { 'toggle': 'on' }
+        on: { toggle: 'off' },
+        off: { toggle: 'on' }
       })
     })
 
@@ -27,8 +27,8 @@ class FavButton extends Nanocomponent {
     const customClassList = props.classList || ''
     const classList = ['dim', 'flex-shrink-0', 'br-pill', 'pa2', 'ma0', 'bg-transparent', 'b--transparent'].join(' ')
     const iconElement = {
-      'on': () => icon('heart-outline', { 'class': 'icon fill-black fill-white--dark icon--sm' }),
-      'off': () => icon('heart-outline', { 'class': 'icon fill-black fill-white--dark icon--sm' })
+      on: () => icon('heart-outline', { class: 'icon fill-black fill-white--dark icon--sm' }),
+      off: () => icon('heart-outline', { class: 'icon fill-black fill-white--dark icon--sm' })
     }[this.machine.state.fav]()
 
     const handler = (e) => {

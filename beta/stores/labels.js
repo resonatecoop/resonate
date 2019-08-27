@@ -42,7 +42,7 @@ function labels () {
     function setMeta () {
       const { name = '', avatar = {} } = state.label.data
       const title = {
-        'labels': 'Labels',
+        labels: 'Labels',
         'labels/:uid': name,
         'labels/:uid/albums': name,
         'labels/:uid/artists': name
@@ -59,7 +59,7 @@ function labels () {
       }[state.route]
 
       emitter.emit('meta', {
-        'title': fullTitle,
+        title: fullTitle,
         'og:image': image,
         'twitter:card': 'summary_large_image',
         'twitter:title': fullTitle,
@@ -71,7 +71,7 @@ function labels () {
     async function getLabels () {
       emitter.emit('labels:meta')
 
-      const { loader, machine } = state.components['labels']
+      const { loader, machine } = state.components.labels
 
       const startLoader = () => {
         loader.emit('loader:toggle')

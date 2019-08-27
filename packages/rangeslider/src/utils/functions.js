@@ -64,10 +64,10 @@ export const isObject = (obj) => Object.prototype.toString.call(obj) === '[objec
 export const simpleExtend = (defaultOpt, options) => {
   const opt = {}
 
-  for (let key in defaultOpt) {
+  for (const key in defaultOpt) {
     opt[key] = defaultOpt[key]
   }
-  for (let key in options) {
+  for (const key in options) {
     opt[key] = options[key]
   }
 

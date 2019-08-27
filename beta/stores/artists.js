@@ -43,7 +43,7 @@ function artists () {
     function setMeta () {
       const { name = '', avatar } = state.artist.data
       const title = {
-        'artists': 'Artists',
+        artists: 'Artists',
         'artists/:uid': name,
         'artists/:uid/albums': name
       }[state.route]
@@ -58,7 +58,7 @@ function artists () {
       }[state.route]
 
       emitter.emit('meta', {
-        'title': fullTitle,
+        title: fullTitle,
         'og:image': image,
         'twitter:card': 'summary_large_image',
         'twitter:title': fullTitle,
@@ -187,7 +187,7 @@ function artists () {
     async function getArtists () {
       emitter.emit('artists:meta')
 
-      const { loader, machine } = state.components['artists']
+      const { loader, machine } = state.components.artists
       const startLoader = () => {
         loader.emit('loader:toggle')
       }

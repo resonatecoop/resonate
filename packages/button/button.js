@@ -16,15 +16,15 @@ function Button (props) {
   } = props
 
   const style = {
-    'default': `${foreground} flex-shrink-0 b--black ba bw b pv2 ph4 f5 ${!disabled ? 'grow' : 'o-50'}`,
-    'blank': `bg-transparent flex-shrink-0 bn f5 ${!disabled ? 'grow' : 'o-50'}`,
-    'none': ''
+    default: `${foreground} flex-shrink-0 b--black ba bw b pv2 ph4 f5 ${!disabled ? 'grow' : 'o-50'}`,
+    blank: `bg-transparent flex-shrink-0 bn f5 ${!disabled ? 'grow' : 'o-50'}`,
+    none: ''
   }[props.style || 'default']
 
   const size = {
-    'none': '',
-    'small': 'w2 h2',
-    'medium': 'w3 h3'
+    none: '',
+    small: 'w2 h2',
+    medium: 'w3 h3'
   }[props.size || 'medium']
 
   const classList = [style, size, prefix]
@@ -39,7 +39,7 @@ function Button (props) {
       class=${classList}
       onclick=${clickHandler}>
         <div class="flex items-center ${!text ? 'justify-center' : ''}">
-          ${iconName ? icon(iconName, { 'class': `icon icon--${iconSize} ${iconFill}` }) : ''}
+          ${iconName ? icon(iconName, { class: `icon icon--${iconSize} ${iconFill}` }) : ''}
           ${text ? html`<span class=${iconName ? 'pl2' : ''}>${text}</span>` : ''}
         </div>
     </button>

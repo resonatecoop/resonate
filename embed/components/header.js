@@ -22,7 +22,7 @@ class Header extends Component {
     return html`
       <header class="${bg} ${text} shadow-contour sticky h3 top-0 left-0 right-0 w-100 z-max flex items-center">
         <a href="https://beta.resonate.is" class="link h3 w3 flex items-center justify-center">
-          ${icon('logo', { 'class': `icon icon--md ${iconFill}` })}
+          ${icon('logo', { class: `icon icon--md ${iconFill}` })}
         </a>
       </header>
     `

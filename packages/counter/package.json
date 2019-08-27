@@ -1,6 +1,6 @@
 {
   "name": "@resonate/counter",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Render a play count counter svg elemen",
   "main": "index.js",
   "scripts": {

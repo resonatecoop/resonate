@@ -1,13 +1,11 @@
 {
   "name": "Stream2own",
   "short_name": "Stream2own",
-  "title": "Resonate",
+  "description": "The community-owned music network.",
   "theme_color": "#18191a",
   "background_color": "#fff",
   "display": "standalone",
-  "orientation": "portrait",
-  "scope": "/",
-  "start_url": "/?launcher=true",
+  "start_url": "/",
   "icons": [
     {
       "src": "/assets/icons/icon-72x72.png",

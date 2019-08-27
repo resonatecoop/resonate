@@ -161,10 +161,10 @@ class Credits extends Component {
 
   createElement () {
     const template = {
-      'list': this.renderList,
-      'payment': this.renderPayment,
-      'recap': this.renderRecap,
-      'checkout': this.renderCheckout
+      list: this.renderList,
+      payment: this.renderPayment,
+      recap: this.renderRecap,
+      checkout: this.renderCheckout
     }[this.machine.state]
 
     return template()
@@ -176,8 +176,8 @@ class Credits extends Component {
     // const { tokens } = prices.find(({ amount }) => amount === this.data.amount)
 
     const title = {
-      'success': 'Payment confirmed',
-      'failed': 'Payment not confirmed'
+      success: 'Payment confirmed',
+      failed: 'Payment not confirmed'
     }[status]
 
     const nextButton = button({
@@ -250,10 +250,10 @@ class Credits extends Component {
             }
 
             if (self.token.card.country === 'US') {
-              let ratesApiURL = 'https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD'
-              let { rates } = await (await fetch(ratesApiURL)).json()
+              const ratesApiURL = 'https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD'
+              const { rates } = await (await fetch(ratesApiURL)).json()
 
-              self.rate = rates['USD']
+              self.rate = rates.USD
               self.currency = 'USD'
             }
 
@@ -393,7 +393,7 @@ class Credits extends Component {
           <label tabindex="0" onkeypress=${handleKeyPress} for=${'amount-' + index}>
             <div class="pa3 flex w-100 flex-auto">
               <div class="${iconStyle}">
-                ${icon('circle', { 'class': 'icon icon--xs' })}
+                ${icon('circle', { class: 'icon icon--xs' })}
               </div>
             </div>
             <div class="pa3 flex w-100 flex-auto f3">

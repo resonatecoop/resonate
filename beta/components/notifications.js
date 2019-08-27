@@ -46,15 +46,15 @@ class Notifications extends Component {
   renderNotifications () {
     const notifications = this.notifications.map(({ type = 'info', message }) => {
       const iconName = {
-        'error': 'info',
-        'info': 'info',
-        'success': 'check'
+        error: 'info',
+        info: 'info',
+        success: 'check'
       }[type]
 
       return html`
         <li class="${fg} ${borders} ba bw1 flex flex-auto items-center tc pv1 mb2 message ${type}">
           <span class="flex items-center justify-center h3 w3">
-            ${iconElement(iconName, { 'class': `icon icon--sm ${iconFillInvert}` })}
+            ${iconElement(iconName, { class: `icon icon--sm ${iconFillInvert}` })}
           </span>
           <p class="lh-copy pl2 f5">
             ${message}

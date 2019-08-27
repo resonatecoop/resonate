@@ -41,8 +41,8 @@ class Login extends Component {
 
   createElement (props) {
     const message = {
-      'loading': html`<p class="status bg-gray bg--mid-gray--dark black w-100 pa2">Loading...</p>`,
-      'error': html`<p class="status bg-yellow w-100 black pa1">Wrong email or password</p>`
+      loading: html`<p class="status bg-gray bg--mid-gray--dark black w-100 pa2">Loading...</p>`,
+      error: html`<p class="status bg-yellow w-100 black pa1">Wrong email or password</p>`
     }[this.machine.state]
 
     const form = this.state.cache(Form, 'login-form').render({

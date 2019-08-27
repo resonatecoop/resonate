@@ -49,15 +49,15 @@ function app () {
         '/': 'Dashboard',
         'search/:q': state.params.q ? state.params.q + ' • ' + 'Search' : 'Search',
         ':user/library/:type': {
-          'favorites': 'Favorites',
-          'owned': 'Owned',
-          'history': 'History'
+          favorites: 'Favorites',
+          owned: 'Owned',
+          history: 'History'
         }[state.params.type],
         'playlist/:type': {
           'top-fav': 'Top favorites',
-          'latest': 'New',
-          'random': 'Random',
-          'top': 'Top 50',
+          latest: 'New',
+          random: 'Random',
+          top: 'Top 50',
           'staff-picks': 'Staff Picks'
         }[state.params.type]
       }[state.route]
@@ -69,7 +69,7 @@ function app () {
       const fullTitle = setTitle(title)
 
       emitter.emit('meta', {
-        'title': fullTitle,
+        title: fullTitle,
         'twitter:card': 'summary_large_image',
         'twitter:title': fullTitle,
         'twitter:site': '@resonatecoop'
@@ -194,7 +194,7 @@ function app () {
 
     emitter.on('route:login', () => {
       if (state.api.token) {
-        log.info(`Redirecting to /`)
+        log.info('Redirecting to /')
         emitter.emit(state.events.PUSHSTATE, '/')
       }
     })

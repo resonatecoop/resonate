@@ -4,12 +4,12 @@ module.exports = () => {
   if (!isBrowser) return 'no-preference'
 
   const medias = {
-    'dark': '(prefers-color-scheme: dark)',
-    'light': '(prefers-color-scheme: light)',
+    dark: '(prefers-color-scheme: dark)',
+    light: '(prefers-color-scheme: light)',
     'no-preference': '(prefers-color-scheme: no-preference)'
   }
 
-  for (let [scheme, media] of Object.entries(medias)) {
+  for (const [scheme, media] of Object.entries(medias)) {
     if (window.matchMedia(media).matches) {
       return scheme
     }

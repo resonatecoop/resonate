@@ -36,12 +36,12 @@ class Header extends Nanocomponent {
 
     this.machine = nanostate.parallel({
       creditsDialog: nanostate('close', {
-        open: { 'close': 'close' },
-        close: { 'open': 'open' }
+        open: { close: 'close' },
+        close: { open: 'open' }
       }),
       logoutDialog: nanostate('close', {
-        open: { 'close': 'close' },
-        close: { 'open': 'open' }
+        open: { close: 'close' },
+        close: { open: 'open' }
       })
     })
 
@@ -185,7 +185,7 @@ class Header extends Nanocomponent {
           <li>
             <a href="" class="flex justify-end w4 dropdown-toggle">
               <span class="flex justify-center items-center w3 h3">
-                ${icon('dropdown', { 'class': `icon icon--sm ${iconFill}` })}
+                ${icon('dropdown', { class: `icon icon--sm ${iconFill}` })}
               </span>
             </a>
             ${dropdownMenu()}
@@ -208,7 +208,7 @@ class Header extends Nanocomponent {
               <a href="" onclick=${(e) => { e.preventDefault(); self.machine.emit('creditsDialog:open') }} class="link flex items-center justify-end dim pa2">
                 <span class="f7 b ph2">TOP-UP</span>
                 <span class="flex justify-center items-center h1 w1">
-                  ${icon('add-fat', { 'class': `icon icon--sm ${iconFillInvert}` })}
+                  ${icon('add-fat', { class: `icon icon--sm ${iconFillInvert}` })}
                 </span>
               </a>
             </li>
@@ -251,7 +251,7 @@ class Header extends Nanocomponent {
 function renderLeftNav () {
   const brand = link({
     href: '/',
-    text: icon('logo', { 'class': `icon icon--md ${iconFill}` }),
+    text: icon('logo', { class: `icon icon--md ${iconFill}` }),
     prefix: 'link flex items-center flex-shrink-0 h-100 grow ph3 overflow-hidden',
     title: 'Resonate Coop'
   })
@@ -291,7 +291,7 @@ function renderLeftNav () {
       ['/stream2own', 'Pricing'],
       ['/the-coop', 'Co-op'],
       ['/blog', 'Blog']
-    ].map(([ path, text ]) => [BASE_URL + path, text])
+    ].map(([path, text]) => [BASE_URL + path, text])
 
     const item = ([href, text]) => {
       const linkEl = link({

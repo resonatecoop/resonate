@@ -1,6 +1,6 @@
 {
   "name": "@resonate/theme-skins",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Theme skins",
   "main": "index.js",
   "scripts": {

@@ -10,10 +10,10 @@ class Artwork extends Nanocomponent {
     super(name)
 
     this.machine = nanostate('idle', {
-      idle: { 'load': 'loading' },
-      loading: { 'resolve': 'data', 'reject': 'error' },
-      data: { 'resolve': 'loading' },
-      error: { 'resolve': 'idle' }
+      idle: { load: 'loading' },
+      loading: { resolve: 'data', reject: 'error' },
+      data: { resolve: 'loading' },
+      error: { resolve: 'idle' }
     })
 
     this.machine.on('data', () => {
@@ -30,8 +30,8 @@ class Artwork extends Nanocomponent {
     this.style = props.style || {}
 
     const artwork = {
-      'loading': void 0,
-      'data': this.renderArtwork()
+      loading: () => {},
+      data: this.renderArtwork()
     }[this.machine.state]
 
     return html`
@@ -46,7 +46,7 @@ class Artwork extends Nanocomponent {
       <img class="db" width=100% decoding="auto" src=${this.blob}">
     `
 
-    for (let [key, value] of Object.entries(this.style)) {
+    for (const [key, value] of Object.entries(this.style)) {
       el.style[key] = value
     }
 

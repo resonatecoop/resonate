@@ -1,5 +1,5 @@
 const separator = ' • '
-const title = require('../manifest.json').title
+const title = process.env.APP_TITLE
 
 module.exports = (viewName) => {
   return viewName ? viewName + separator + title : title

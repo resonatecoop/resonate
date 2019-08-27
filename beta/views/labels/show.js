@@ -32,7 +32,7 @@ function LabelView () {
 
       const image = state.label.data.avatar || {}
       const profileHeaderImage = state.cache(ProfileHeaderImage, `profile-header-image-${id}`).render({
-        cover: image['cover']
+        cover: image.cover
       })
 
       return html`
@@ -66,7 +66,6 @@ function LabelView () {
       const { items = [], numberOfPages } = state.label.artists
       const artists = state.cache(Artists, 'label-artists-' + id).render({
         items,
-        shuffle: true,
         numberOfPages,
         pagination: numberOfPages > 1
       })
@@ -89,7 +88,7 @@ function LabelView () {
       })
 
       return html`
-        <section id="label-albums" class="flex-auto mh3">
+        <section id="label-albums" class="flex-auto mh3 mt4">
           <h2 class="lh-title">Albums</h2>
           ${albums}
         </section>

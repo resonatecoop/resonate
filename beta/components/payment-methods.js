@@ -57,7 +57,7 @@ class PaymentMethods extends Component {
     return html`
       <div class="name-input mb1">
         ${nameInput}
-        ${errors['name'] && !pristine['name'] ? html`<span class="message warning pb2">${errors['name'].message}</span>` : ''}
+        ${errors.name && !pristine.name ? html`<span class="message warning pb2">${errors.name.message}</span>` : ''}
       </div>
     `
   }

@@ -1,6 +1,6 @@
 {
   "name": "@resonate/menu-button",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Actions menu button",
   "main": "menu-button.js",
   "directories": {

@@ -9,7 +9,7 @@ function theme (options = {}) {
     if (!isBrowser) return
 
     if (window.localStorage.getItem('color-scheme')) {
-      let theme = window.localStorage.getItem('color-scheme')
+      const theme = window.localStorage.getItem('color-scheme')
       document.body.classList.add(`color-scheme--${theme}`)
       state.theme = theme
     } else {

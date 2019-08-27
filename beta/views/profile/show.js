@@ -11,7 +11,7 @@ function Profile () {
 
     const image = state.user.avatar || {}
     const profileHeaderImage = state.cache(ProfileHeaderImage, `profile-header-image-${id}`).render({
-      cover: image['cover']
+      cover: image.cover
     })
     const profileHeader = state.cache(ProfileHeader, `profile-header-${id}`).render({
       data: state.user

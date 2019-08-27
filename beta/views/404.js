@@ -15,9 +15,6 @@ function NotFound () {
           </div>
           <a href="/" class="link color-inherit dim dib grow">Go back to /</a>
         </div>
-        <div class="flex flex-auto justify-center">
-          <iframe src="https://beta.resonate.localhost/embed/tracks/144" theme=${state.theme === 'dark' ? 'light' : 'dark'} style="margin:0;border:none;margin-top:var(--height-1);width:400px;height:480px;border: 1px solid #000;"></iframe>
-        </div>
       </div>
     `
   }

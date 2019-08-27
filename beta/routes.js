@@ -20,6 +20,6 @@ module.exports = (app) => {
   app.route('/account', Layout(require('./views/profile/show')))
   app.route('/library/:type', Layout(require('./views/playlist')))
   app.route('/:user/library/:type', Layout(require('./views/playlist')))
-  app.route('/:user', Layout(require('./views/placeholder')))
+  app.route('/:user', Layout(require('./views/404')))
   app.route('/:user/*', Layout(require('./views/404')))
 }

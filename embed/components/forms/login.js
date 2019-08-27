@@ -40,8 +40,8 @@ class Login extends Component {
 
   createElement (props) {
     const message = {
-      'loading': html`<p class="status bg-black-10 w-100 black pa1">Loading</p>`,
-      'error': html`<p class="status bg-yellow w-100 black pa1">Wrong login details</p>`
+      loading: html`<p class="status bg-black-10 w-100 black pa1">Loading</p>`,
+      error: html`<p class="status bg-yellow w-100 black pa1">Wrong login details</p>`
     }[this.machine.state]
 
     const form = this.state.cache(Form, 'login-form').render({

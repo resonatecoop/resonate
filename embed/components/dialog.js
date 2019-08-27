@@ -53,12 +53,12 @@ class Dialog extends Component {
       <dialog class=${this.classList}>
         ${this.title ? html`<h3>${this.title}</h3>` : ''}
         ${button({
-    onClick: () => this.close(),
-    size: 'small',
-    classList: 'color-inherit bn dim absolute top-0 right-0',
-    iconName: 'close',
-    iconSize: 'xs'
-  })}
+      onClick: () => this.close(),
+      size: 'small',
+      classList: 'color-inherit bn dim absolute top-0 right-0',
+      iconName: 'close',
+      iconSize: 'xs'
+    })}
         <form novalidate id="form-dialog" method="dialog" class="ma0 relative" onsubmit=${this.onSubmit}>
           ${this.content()}
         </form>

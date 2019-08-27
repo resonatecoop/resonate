@@ -184,7 +184,7 @@ const app = (state, emitter) => {
   emitter.on(state.events.DOMCONTENTLOADED, () => {
     const frameEl = window.frameElement
     if (frameEl) {
-      let theme = frameEl.getAttribute('theme')
+      const theme = frameEl.getAttribute('theme')
       emitter.emit('theme', { theme })
     }
 

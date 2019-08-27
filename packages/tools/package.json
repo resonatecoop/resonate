@@ -19,7 +19,7 @@
     "postcss-reporter": "^6.0.1",
     "resize-observer-polyfill": "^1.5.0",
     "sheetify-postcss": "git+https://github.com/auggod/sheetify-postcss.git",
-    "standard": "12.0.1",
+    "standard": "14.0.2",
     "tape": "^4.10.1",
     "tape-run": "^5.0.0"
   }

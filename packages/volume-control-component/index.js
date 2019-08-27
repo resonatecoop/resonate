@@ -30,8 +30,8 @@ class VolumeControl extends Component {
 
     this.machine = nanostate.parallel({
       volume: nanostate('off', {
-        on: { 'toggle': 'off' },
-        off: { 'toggle': 'on' }
+        on: { toggle: 'off' },
+        off: { toggle: 'on' }
       })
     })
     this.machine.on('volume:toggle', this._update)

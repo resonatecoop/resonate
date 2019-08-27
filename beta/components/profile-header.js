@@ -21,7 +21,7 @@ class ProfileHeader extends Nanocomponent {
     this.state.data = props.data
 
     const { avatar: image = {}, name, country } = props.data
-    const fallback = image['original'] || '/assets/default.png'
+    const fallback = image.original || '/assets/default.png'
     const { large = fallback } = image
 
     return html`

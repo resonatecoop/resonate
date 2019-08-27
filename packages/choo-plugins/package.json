@@ -1,6 +1,6 @@
 {
   "name": "@resonate/choo-plugins",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "All choo plugins for resonate",
   "main": "index.js",
   "scripts": {

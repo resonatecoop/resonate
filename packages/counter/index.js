@@ -1,6 +1,6 @@
 const html = require('nanohtml')
 // const circles = [ [2, 2], [9, 2], [16, 2], [2, 9], [9, 9], [16, 9], [2, 16], [9, 16], [16, 16] ]
-const circles = [ [3, 3], [12, 3], [21, 3], [3, 12], [12, 12], [21, 12], [3, 21], [12, 21], [21, 21] ]
+const circles = [[3, 3], [12, 3], [21, 3], [3, 12], [12, 12], [21, 12], [3, 21], [12, 21], [21, 21]]
 // const scaled = ((scale * r) * 2) * 3 + (scale * 2) * 3 // expand width
 
 module.exports = (id, options = {}) => {

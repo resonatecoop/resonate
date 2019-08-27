@@ -22,7 +22,7 @@ module.exports = (form) => {
       <ul class="flex flex-column list ma0 pa0 ml3 error">
         ${messages.map(({ message, name }) => html`
           <li class="flex items-center pv1">
-            ${icon('info', { 'class': 'icon icon--red icon--md' })}
+            ${icon('info', { class: 'icon icon--red icon--md' })}
             <a href="#${name}" class="ml1 link db underline">
               ${message}
             </a>

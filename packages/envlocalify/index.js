@@ -8,8 +8,8 @@ function envlocalify (file, opts) {
   const environment = []
 
   const filename = {
-    'production': '.env.production',
-    'development': '.env'
+    production: '.env.production',
+    development: '.env'
   }[process.env.NODE_ENV] || '.env'
 
   if (!opts.envfile) {

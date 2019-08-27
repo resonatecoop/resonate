@@ -12,6 +12,11 @@
     "build": "npm run build:app",
     "build:app": "lerna run build --scope @resonate/app --stream"
   },
+  "standard": {
+    "ignore": [
+      "**/lib/**"
+    ]
+  },
   "dependencies": {
     "@resonate/api-factory-generator": "file:packages/api-factory-generator",
     "@resonate/app": "file:beta",

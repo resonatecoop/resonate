@@ -17,7 +17,7 @@ class Form extends Component {
   handler (e) {
     e.preventDefault()
 
-    for (let field of e.target.elements) {
+    for (const field of e.target.elements) {
       const isRequired = field.required
       const name = field.name || ''
       const value = field.value || ''
@@ -48,14 +48,14 @@ class Form extends Component {
     const inputs = this.fields.map(fieldProps => {
       const { name = fieldProps.type, help } = fieldProps
       const props = Object.assign(fieldProps, {
-        'onchange': (e) => {
+        onchange: (e) => {
           this.validate({ name: e.target.name, value: e.target.value })
           this.rerender()
         }
       })
 
       const info = html`<div class="absolute left-0 ph1 flex items-center" style="top:50%;transform: translate(-100%, -50%);">
-          ${icon('info', { 'class': 'icon icon--red icon--sm' })}
+          ${icon('info', { class: 'icon icon--red icon--sm' })}
         </div>`
 
       return html`
@@ -89,7 +89,7 @@ class Form extends Component {
           <ul class="flex flex-column list ma0 pa0 ml3 error">
             ${messages.map(({ message, name }) => html`
               <li class="flex items-center pv1">
-                ${icon('info', { 'class': 'icon icon--red icon--md' })}
+                ${icon('info', { class: 'icon icon--red icon--md' })}
                 <a href="#${name}" class="ml1 link db underline">
                   ${message}
                 </a>

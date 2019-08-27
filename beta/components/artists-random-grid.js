@@ -46,7 +46,7 @@ class ArtistsRandomGrid extends Nanocomponent {
 
   createElement () {
     const item = ({ avatar, name: artist, id }) => {
-      const filename = avatar['original'] || avatar['medium']
+      const filename = avatar.original || avatar.medium
       const url = filename || '/thumbs/default.png'
       return html`
         <li class="fl w-50 w-third-m w-20-l">

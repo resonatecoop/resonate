@@ -172,11 +172,11 @@ export default class RangeSlider {
 
     // hide the input visually
     dom.setCss(this.element, {
-      'position': 'absolute',
-      'width': '1px',
-      'height': '1px',
-      'overflow': 'hidden',
-      'opacity': '0'
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
+      opacity: '0'
     })
 
     // Store context
@@ -416,7 +416,6 @@ export default class RangeSlider {
   }
 
   _setPosition (pos) {
-    let position
     let stickRadius
     let restFromValue
     let stickTo
@@ -435,18 +434,18 @@ export default class RangeSlider {
         value = value - restFromValue + stickTo
       }
     }
-    position = this._getPositionFromValue(value)
+    const position = this._getPositionFromValue(value)
 
     // Update ui
     if (this.vertical) {
       this.container.style.height = (position + this.grabX) + 'px'
-      this.handle.style['webkitTransform'] = 'translateY(-' + position + 'px)'
-      this.handle.style['msTransform'] = 'translateY(-' + position + 'px)'
+      this.handle.style.webkitTransform = 'translateY(-' + position + 'px)'
+      this.handle.style.msTransform = 'translateY(-' + position + 'px)'
       this.handle.style.transform = 'translateY(-' + position + 'px)'
     } else {
       this.container.style.width = (position + this.grabX) + 'px'
-      this.handle.style['webkitTransform'] = 'translateX(' + position + 'px)'
-      this.handle.style['msTransform'] = 'translateX(' + position + 'px)'
+      this.handle.style.webkitTransform = 'translateX(' + position + 'px)'
+      this.handle.style.msTransform = 'translateX(' + position + 'px)'
       this.handle.style.transform = 'translateX(' + position + 'px)'
     }
 
@@ -503,7 +502,7 @@ export default class RangeSlider {
     }
     this.options.buffer = bufferSize
 
-    let paddingSize = this.options.borderRadius / this.rangeSize * 100
+    const paddingSize = this.options.borderRadius / this.rangeSize * 100
     let bufferSizeWithPadding = bufferSize - paddingSize
 
     if (bufferSizeWithPadding < 0) {

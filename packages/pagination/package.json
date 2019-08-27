@@ -1,6 +1,6 @@
 {
   "name": "@resonate/pagination",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Pagination ui component",
   "main": "index.js",
   "scripts": {

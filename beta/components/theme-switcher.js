@@ -91,8 +91,8 @@ class ThemeSwitcher extends Component {
 
     this.machine = nanostate.parallel({
       theme: nanostate(this.state.theme, {
-        dark: { 'toggle': 'light' },
-        light: { 'toggle': 'dark' }
+        dark: { toggle: 'light' },
+        light: { toggle: 'dark' }
       })
     })
 
@@ -116,7 +116,7 @@ class ThemeSwitcher extends Component {
               <input type="radio" disabled=${!!this.auto} name="theme" checked=${this.machine.state.theme === 'dark'} id="chooseDark" onchange=${this._handleChange} value="dark">
               <label tabindex="0" onkeypress=${this._handleKeyPress} class="flex flex-auto items-center justify-center w-100" for="chooseDark">
                 <div class="pa3 flex justify-center w-100 flex-auto">
-                  ${icon('circle', { 'class': `icon icon--sm ${iconFillInvert}` })}
+                  ${icon('circle', { class: `icon icon--sm ${iconFillInvert}` })}
                 </div>
                 <div class="pv3 flex w-100 flex-auto">
                   Dark
@@ -127,7 +127,7 @@ class ThemeSwitcher extends Component {
               <input type="radio" disabled=${!!this.auto} name="theme" checked=${this.machine.state.theme === 'light'} id="chooseLight" onchange=${this._handleChange} value="light">
               <label tabindex="0" onkeypress=${this._handleKeyPress} class="flex flex-auto items-center justify-center w-100" for="chooseLight">
                 <div class="pa3 flex justify-center w-100 flex-auto">
-                  ${icon('circle', { 'class': `icon icon--sm ${iconFillInvert}` })}
+                  ${icon('circle', { class: `icon icon--sm ${iconFillInvert}` })}
                 </div>
                 <div class="pv3 flex w-100 flex-auto">
                   Light
@@ -138,7 +138,7 @@ class ThemeSwitcher extends Component {
               <input type="checkbox" name="theme" checked=${!!this.auto} id="chooseAuto" onchange=${this._handleAutoChange} value="auto">
               <label tabindex="0" class="flex flex-auto items-center justify-center w-100" for="chooseAuto">
                 <div class="pa3 flex justify-center w-100 flex-auto">
-                  ${icon('square', { 'class': `icon icon--sm ${iconFillInvert}` })}
+                  ${icon('square', { class: `icon icon--sm ${iconFillInvert}` })}
                 </div>
                 <div class="pv3 lex w-100 flex-auto">
                   Auto

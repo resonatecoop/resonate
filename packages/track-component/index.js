@@ -18,7 +18,7 @@ const { iconFill, text } = require('@resonate/theme-skins')
 
 const renderTime = (time, opts = {}) => {
   return html`
-    <div class=${opts['class'] || 'currentTime'}>${time > 0 ? clock(time) : ''}</div>
+    <div class=${opts.class || 'currentTime'}>${time > 0 ? clock(time) : ''}</div>
   `
 }
 
@@ -46,16 +46,16 @@ class Track extends Component {
 
     this.machine = nanostate.parallel({
       hover: nanostate('off', {
-        on: { 'off': 'off' },
-        off: { 'on': 'on' }
+        on: { off: 'off' },
+        off: { on: 'on' }
       }),
       favorite: nanostate('no', {
-        yes: { 'toggle': 'no' },
-        no: { 'toggle': 'yes' }
+        yes: { toggle: 'no' },
+        no: { toggle: 'yes' }
       }),
       sharingDialog: nanostate('close', {
-        open: { 'close': 'close' },
-        close: { 'open': 'open' }
+        open: { close: 'close' },
+        close: { open: 'open' }
       })
     })
 
@@ -89,7 +89,7 @@ class Track extends Component {
           ${this._track.status !== 'free' ? renderPlayCount(this._count, this._track.id) : ''}
           ${this.renderMenuButton()}
           <div class="w3 tc">
-            ${renderTime(this._track.duration, { 'class': 'duration' })}
+            ${renderTime(this._track.duration, { class: 'duration' })}
           </div>
         </div>
       </li>
@@ -262,7 +262,7 @@ class Track extends Component {
 
   renderPlaybackButton () {
     const iconSize = this._type === 'album' ? 'icon--xs' : 'icon--sm'
-    const renderIcon = () => icon(this._isPlaying() ? 'pause' : 'play', { 'class': `icon ${iconSize} ${iconFill}` })
+    const renderIcon = () => icon(this._isPlaying() ? 'pause' : 'play', { class: `icon ${iconSize} ${iconFill}` })
     const renderIndex = () => html`<span class=${text}>${this._index}</span>`
 
     const renderArtwork = () => {
@@ -278,12 +278,12 @@ class Track extends Component {
     }
 
     const withTracking = !this._isActive() && this._index !== 0 ? {
-      'on': renderIcon(),
-      'off': renderIndex()
+      on: renderIcon(),
+      off: renderIndex()
     }[this.machine.state.hover] : renderIcon()
 
     const button = {
-      'album': withTracking
+      album: withTracking
     }[this._type] || renderArtwork()
 
     const buttonSize = this._type === 'album' ? 'w1 h1' : 'w3 h3'
@@ -317,10 +317,10 @@ class Track extends Component {
     }
 
     const eventName = {
-      'idle': 'play',
-      'playing': 'pause',
-      'paused': 'play',
-      'stopped': 'play'
+      idle: 'play',
+      playing: 'pause',
+      paused: 'play',
+      stopped: 'play'
     }[this.player.playback.state]
 
     if (!eventName) return false

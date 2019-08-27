@@ -1,6 +1,6 @@
 {
   "name": "@resonate/player-component",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Player component",
   "main": "index.js",
   "scripts": {

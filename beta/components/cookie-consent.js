@@ -62,7 +62,7 @@ class CookieConsent extends Nanocomponent {
   }
 
   onClose (e) {
-    this.emit('cookies:setStatus', e.target.returnValue)
+    this.emit('cookies:setStatus', e.target.value || e.target.returnValue)
 
     this.destroy()
   }

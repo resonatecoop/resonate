@@ -46,7 +46,7 @@ class PopupMenuAction extends Nanocomponent {
     el.setAttribute('role', 'menu')
 
     if (!el.getAttribute('aria-labelledby') && !el.getAttribute('aria-label') && !el.getAttribute('title')) {
-      let label = this.controller.element.innerHTML
+      const label = this.controller.element.innerHTML
       el.setAttribute('aria-label', label)
     }
 
@@ -146,7 +146,7 @@ class PopupMenuAction extends Nanocomponent {
     if (currentItem === this.firstItem) {
       this.lastItem.domNode.focus()
     } else {
-      let index = this.menuitems.indexOf(currentItem)
+      const index = this.menuitems.indexOf(currentItem)
       this.menuitems[index - 1].domNode.focus()
     }
   }
@@ -155,7 +155,7 @@ class PopupMenuAction extends Nanocomponent {
     if (currentItem === this.lastItem) {
       this.firstItem.domNode.focus()
     } else {
-      let index = this.menuitems.indexOf(currentItem)
+      const index = this.menuitems.indexOf(currentItem)
       this.menuitems[index + 1].domNode.focus()
     }
   }

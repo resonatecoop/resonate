@@ -32,7 +32,7 @@ function ArtistView () {
     function renderHeader (state) {
       const id = parseInt(state.params.uid, 10)
       const image = state.artist.data.avatar || {}
-      const cover = image['cover']
+      const cover = image.cover
       const profileHeaderImage = state.cache(ProfileHeaderImage, `profile-header-image-${id}`)
       const profileHeader = state.cache(ProfileHeader, `profile-header-${id}`).render({
         data: state.artist.data

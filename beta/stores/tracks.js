@@ -43,7 +43,7 @@ function tracks () {
       }[state.route]
 
       state.meta = {
-        'title': fullTitle,
+        title: fullTitle,
         'og:image': image,
         'og:title': fullTitle,
         'og:type': 'website',

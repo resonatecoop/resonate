@@ -1,6 +1,6 @@
 {
   "name": "@resonate/seeker-component",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Seeker componen",
   "main": "index.js",
   "scripts": {

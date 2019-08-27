@@ -28,7 +28,7 @@ function updateCounter (props, element) {
 
 function setPlaycount (props) {
   const { track } = props
-  for (let counter of [...document.querySelectorAll(`#cid-${track.id}`)]) {
+  for (const counter of [...document.querySelectorAll(`#cid-${track.id}`)]) {
     updateCounter(props, counter)
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@resonate/volume-control-component",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Volume control using rangeslider-js",
   "main": "index.js",
   "scripts": {

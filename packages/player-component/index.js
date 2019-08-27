@@ -29,9 +29,9 @@ const breakpoint = size => {
   if (!isBrowser) return true
 
   const breakpoint = {
-    'ns': 'screen and (min-width: 30em)',
-    'm': 'screen and (min-width: 30em) and (max-width: 60em)',
-    'lg': 'screen and (min-width: 60em)'
+    ns: 'screen and (min-width: 30em)',
+    m: 'screen and (min-width: 30em) and (max-width: 60em)',
+    lg: 'screen and (min-width: 60em)'
   }[size]
 
   return window.matchMedia(breakpoint).matches
@@ -89,8 +89,8 @@ class Player extends Nanocomponent {
 
     this.playback = nanostate('idle', {
       idle: { play: 'playing' },
-      playing: { pause: 'paused', 'stop': 'stopped' },
-      paused: { play: 'playing', 'stop': 'stopped' },
+      playing: { pause: 'paused', stop: 'stopped' },
+      paused: { play: 'playing', stop: 'stopped' },
       stopped: { play: 'playing' }
     })
 
@@ -110,16 +110,16 @@ class Player extends Nanocomponent {
 
     this.machine = nanostate.parallel({
       favorite: nanostate('no', {
-        yes: { 'toggle': 'no' },
-        no: { 'toggle': 'yes' }
+        yes: { toggle: 'no' },
+        no: { toggle: 'yes' }
       }),
       fullscreen: nanostate('off', {
-        on: { 'toggle': 'off' },
-        off: { 'toggle': 'on' }
+        on: { toggle: 'off' },
+        off: { toggle: 'on' }
       }),
       sharingDialog: nanostate('close', {
-        open: { 'close': 'close' },
-        close: { 'open': 'open' }
+        open: { close: 'close' },
+        close: { open: 'open' }
       })
     })
 
@@ -137,7 +137,7 @@ class Player extends Nanocomponent {
 
   renderTime (t = 0, opts = {}) {
     return html`
-      <div class=${opts['class'] || 'currentTime'}>${t > 0 ? clock(t) : ''}</div>
+      <div class=${opts.class || 'currentTime'}>${t > 0 ? clock(t) : ''}</div>
     `
   }
 
@@ -173,7 +173,7 @@ class Player extends Nanocomponent {
 
   renderPlayer () {
     const artwork = {
-      'on': () => {
+      on: () => {
         const image = new Artwork().render({
           url: this._track.cover,
           style: {
@@ -198,7 +198,7 @@ class Player extends Nanocomponent {
             </div>
           </div>`
       },
-      'off': () => void 0
+      off: () => {}
     }[this.machine.state.fullscreen]()
 
     const controls = this.renderControls()
@@ -292,7 +292,7 @@ class Player extends Nanocomponent {
             <div class="absolute w-100 h-100 flex items-center justify-center" style="z-index:-1;">
               <span class="pl2 flex flex-auto">${this.renderTime(this._currentTime)}</span>
               <span class="pr2 flex flex-auto justify-end">
-                ${this.renderTime(this.duration, { 'class': 'duration' })}
+                ${this.renderTime(this.duration, { class: 'duration' })}
               </span>
             </div>
           </div>
@@ -308,7 +308,7 @@ class Player extends Nanocomponent {
     }
 
     const controls = {
-      'on': () => {
+      on: () => {
         return html`
           <div class="controls flex flex-column flex-auto flex-column h-100 bt bw b--mid-gray b--near-black--dark">
             <div class="flex flex-auto">
@@ -337,7 +337,7 @@ class Player extends Nanocomponent {
           </div>
         `
       },
-      'off': () => {
+      off: () => {
         return html`
           <div class="controls flex flex-auto w-100">
             ${renderFullScreenButton()}
@@ -464,10 +464,10 @@ class Player extends Nanocomponent {
     e.stopPropagation()
 
     const eventName = {
-      'idle': 'play',
-      'playing': 'pause',
-      'paused': 'play',
-      'stopped': 'play'
+      idle: 'play',
+      playing: 'pause',
+      paused: 'play',
+      stopped: 'play'
     }[this.playback.state]
 
     if (!eventName) return false
@@ -584,7 +584,7 @@ class Player extends Nanocomponent {
       const b = this.element.querySelector('.play-button')
       const i = this.element.querySelector('.icon-pause')
       b.setAttribute('title', playing ? 'Pause' : 'Play')
-      morph(i, icon(playing ? 'pause' : 'play', { 'class': i.classList }))
+      morph(i, icon(playing ? 'pause' : 'play', { class: i.classList }))
     }
   }
 
@@ -597,7 +597,7 @@ class Player extends Nanocomponent {
       const b = this.element.querySelector('.play-button')
       const i = this.element.querySelector('.icon-pause')
       b.setAttribute('title', 'Play')
-      morph(i, icon('play', { 'class': i.classList }))
+      morph(i, icon('play', { class: i.classList }))
     }
   }
 
@@ -695,7 +695,7 @@ class Player extends Nanocomponent {
   _loadedmetadata () {
     this.duration = this.sound.audio.duration
 
-    morph(this.element.querySelector('.duration'), this.renderTime(this.duration, { 'class': 'duration' }))
+    morph(this.element.querySelector('.duration'), this.renderTime(this.duration, { class: 'duration' }))
   }
 
   set fav (fav) {

@@ -31,10 +31,10 @@ class Albums extends Component {
     this.log = nanologger(id)
 
     this.machine = nanostate('idle', {
-      idle: { 'start': 'loading', 'resolve': 'data' },
-      loading: { 'resolve': 'data', reject: 'error' },
-      data: { 'start': 'idle', 'resolve': 'data' },
-      error: { 'start': 'idle' }
+      idle: { start: 'loading', resolve: 'data' },
+      loading: { resolve: 'data', reject: 'error' },
+      data: { start: 'idle', resolve: 'data' },
+      error: { start: 'idle' }
     })
 
     this.machine.event('notFound', nanostate('notFound', {
@@ -43,8 +43,8 @@ class Albums extends Component {
 
     this.loader = nanostate.parallel({
       loader: nanostate('off', {
-        on: { 'toggle': 'off' },
-        off: { 'toggle': 'on' }
+        on: { toggle: 'off' },
+        off: { toggle: 'on' }
       })
     })
 
@@ -82,8 +82,8 @@ class Albums extends Component {
 
     const albums = {
       loading: {
-        'on': this.renderLoader,
-        'off': () => void 0
+        on: this.renderLoader,
+        off: () => {}
       }[this.loader.state.loader](),
       notFound: this.renderPlaceholder(),
       error: this.renderError()
@@ -94,7 +94,7 @@ class Albums extends Component {
     if (paginationEnabled) {
       paginationEl = new Pagination(this.id + '-pagination', this.state, this.emit).render({
         navigate: function (pageNumber) {
-          let path = !/albums/.test(this.state.href) ? '/albums' : ''
+          const path = !/albums/.test(this.state.href) ? '/albums' : ''
           self.emit(self.state.events.PUSHSTATE, self.state.href + `${path}?page=${pageNumber}`)
         },
         path: !/albums/.test(this.state.href) ? '/albums' : '',
@@ -115,9 +115,7 @@ class Albums extends Component {
       <div class="flex flex-column flex-auto w-100 items-center justify-center">
         <p>😱 Failed to fetch albums</p>
         <div>
-          <button class="grow dim" onclick=${() => {
-    this.emit('labels:reload', this.state.params.id)
-  }}>Try again</button>
+          <button class="grow dim" onclick=${() => this.emit('labels:reload', this.state.params.id)}}>Try again</button>
         </div>
       </div>
     `

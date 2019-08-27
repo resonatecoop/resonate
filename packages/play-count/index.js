@@ -29,7 +29,7 @@ class PlayCount {
     if (animate) {
       this.animate()
     } else {
-      for (let [index, circle] of Object.entries(this.sort(circles))) {
+      for (const [index, circle] of Object.entries(this.sort(circles))) {
         if (parseInt(index, 10) <= parseInt(count, 10) - 1) {
           circle.setAttribute('stroke', this.fillColor)
           circle.setAttribute('fill', this.fillColor)
@@ -88,7 +88,7 @@ class PlayCount {
       }
       this.timings.then = this.timings.now - (this.timings.delta % this.timings.interval)
 
-      for (let [index, circle] of Object.entries(this.sort(circles))) {
+      for (const [index, circle] of Object.entries(this.sort(circles))) {
         circle.setAttribute('fill', 'transparent')
         circle.setAttribute('stroke', '#c4c4c4')
         if (parseInt(index, 10) <= this.timings.count - 1) {

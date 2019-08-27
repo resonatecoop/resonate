@@ -17,12 +17,15 @@ class TrackDetails extends Nanocomponent {
     this._track_group = props.track_group
     this._track = props.track || {}
     this._url = props.url
+    this._count = props.count
+    this._fav = props.fav
     this._playlist = []
 
     const trackComponent = this._track.id ? new TrackComponent(`track-${this._track.id}`, this.state, this.emit).render({
       style: 'blank',
-      count: 0,
+      count: this._count,
       index: 0,
+      fav: this._fav,
       src: this._url,
       track: this._track,
       trackGroup: this._track_group,
@@ -45,7 +48,7 @@ class TrackDetails extends Nanocomponent {
   }
 
   update (props) {
-    return true
+    return props.track.id !== this._track.id
   }
 }
 

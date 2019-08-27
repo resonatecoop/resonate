@@ -23,7 +23,7 @@ const prefix = css`
 class LabelItem extends Component {
   createElement (props) {
     const { avatar: image = {}, id, name } = props
-    const fallback = image['original'] || '/assets/default.png'
+    const fallback = image.original || '/assets/default.png'
     const { large: imageUrl = fallback } = image
 
     return html`
@@ -60,9 +60,9 @@ class Labels extends Component {
     this.renderPlaceholder = this.renderPlaceholder.bind(this)
 
     this.local.machine = nanostate('idle', {
-      idle: { 'start': 'loading', 'resolve': 'idle' },
-      loading: { 'resolve': 'idle', reject: 'error' },
-      error: { 'start': 'idle' }
+      idle: { start: 'loading', resolve: 'idle' },
+      loading: { resolve: 'idle', reject: 'error' },
+      error: { start: 'idle' }
     })
 
     this.local.machine.event('notFound', nanostate('notFound', {
@@ -71,8 +71,8 @@ class Labels extends Component {
 
     this.local.loader = nanostate.parallel({
       loader: nanostate('off', {
-        on: { 'toggle': 'off' },
-        off: { 'toggle': 'on' }
+        on: { toggle: 'off' },
+        off: { toggle: 'on' }
       })
     })
 
@@ -109,8 +109,8 @@ class Labels extends Component {
 
     const labels = {
       loading: {
-        'on': this.renderLoader,
-        'off': () => void 0
+        on: this.renderLoader,
+        off: () => {}
       }[this.local.loader.state.loader](),
       notFound: this.renderPlaceholder(),
       error: this.renderError()

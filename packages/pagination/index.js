@@ -23,7 +23,7 @@ class Pagination extends Nanocomponent {
     this.numberOfPages = 1
 
     if (this.state.query) {
-      let pageNumber = Number(this.state.query.page)
+      const pageNumber = Number(this.state.query.page)
       if (Number.isFinite(pageNumber)) {
         this.currentPage = pageNumber
         this.prevPage = this.currentPage - 1
@@ -117,7 +117,7 @@ class Pagination extends Nanocomponent {
 
   beforerender () {
     if (this.state.query) {
-      let pageNumber = Number(this.state.query.page)
+      const pageNumber = Number(this.state.query.page)
       if (Number.isFinite(pageNumber)) {
         this.currentPage = pageNumber
         this.prevPage = this.currentPage - 1

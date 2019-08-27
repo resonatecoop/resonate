@@ -22,7 +22,10 @@ module.exports = () => {
 
         cookies.set('cookieconsent_status', state.cookieConsentStatus, { secure: true, expires: 365, domain: COOKIE_DOMAIN })
 
-        emitter.emit('notify', { host: document.body, message: state.cookieConsentStatus === 'allow' ? 'Cookies are allowed' : 'Cookies are disabled' })
+        emitter.emit('notify', {
+          host: document.body,
+          message: state.cookieConsentStatus === 'allow' ? 'Cookies are allowed' : 'Cookies are disabled'
+        })
 
         emitter.emit(state.events.RENDER)
       })
