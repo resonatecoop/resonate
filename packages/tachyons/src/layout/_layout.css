@@ -38,7 +38,7 @@ svg, dialog {
   }
 }
 
-.color-scheme--dark {
+.color-scheme--dark {
   background-color: var(--black);
   color: var(--white);
   border-color: var(--near-black);
@@ -48,7 +48,7 @@ svg, dialog {
   }
 }
 
-.color-scheme--light {
+.color-scheme--light {
   background-color: var(--white);
   color: var(--black);
   border-color: var(--mid-gray);
