@@ -10,7 +10,7 @@
     "dependency-check": "^3.3.0",
     "from2-string": "^1.1.0",
     "hstream": "^1.2.0",
-    "jalla": "1.0.0-10",
+    "jalla": "1.0.0-14",
     "lerna": "^3.16.4",
     "postcss-custom-media": "^7.0.7",
     "postcss-import": "^12.0.1",
