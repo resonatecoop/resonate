@@ -1,0 +1,42 @@
+.progressBar, .progressBar__fill {
+  display: block;
+}
+
+.progressBar {
+  position: absolute;
+  background-color: transparent;
+}
+
+.progressBar__horizontal {
+  height: 6px;
+  width: 100%;
+}
+
+.progressBar__fill {
+  position: absolute;
+}
+
+.progressBar__background__horizontal {
+  background-color: var(--gray);
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.progressBar__fill__horizontal {
+  background-color: var(--near-black);
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.progressBar__handle {
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  display: none;
+  width: 0;
+  height: 0;
+  position: absolute;
+}

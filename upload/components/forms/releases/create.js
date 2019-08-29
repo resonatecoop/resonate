@@ -6,7 +6,7 @@ const button = require('@resonate/button')
 const textarea = require('@resonate/textarea-element')
 const icon = require('@resonate/icon-element')
 const messages = require('../messages')
-const Uploader = require('../../uploader')
+const ImageUploader = require('../../image-uploader')
 const isEqual = require('is-equal-shallow')
 
 const isEmpty = require('validator/lib/isEmpty')
@@ -127,7 +127,7 @@ class ReleaseForm extends Component {
       }
     }
 
-    const uploadArtwork = renderField(this.state.cache(Uploader, 'upload-artwork').render({
+    const uploadArtwork = renderField(this.state.cache(ImageUploader, 'upload-artwork').render({
       form: this.form,
       validator: this.validator,
       required: true,
@@ -139,8 +139,8 @@ class ReleaseForm extends Component {
     const albumArtistInput = renderField(input({
       type: 'text',
       name: 'display_artist',
-      invalid: errors['display_artist'] && !pristine['display_artist'],
-      value: values['display_artist'],
+      invalid: errors.display_artist && !pristine.display_artist,
+      value: values.display_artist,
       onchange: async (e) => {
         this.validator.validate(e.target.name, e.target.value)
         this.local.data[e.target.name] = e.target.value
@@ -157,8 +157,8 @@ class ReleaseForm extends Component {
     const releaseTitleInput = renderField(input({
       type: 'text',
       name: 'title',
-      invalid: errors['title'] && !pristine['title'],
-      value: values['title'],
+      invalid: errors.title && !pristine.title,
+      value: values.title,
       onchange: async (e) => {
         this.validator.validate(e.target.name, e.target.value)
         this.local.data[e.target.name] = e.target.value
@@ -197,7 +197,7 @@ class ReleaseForm extends Component {
       form: this.form,
       items: this.local.data.tags || [],
       onchange: async items => {
-        this.local.data['tags'] = items
+        this.local.data.tags = items
         await storage.setItem('release', this.local.data)
       },
       required: false,
@@ -214,7 +214,7 @@ class ReleaseForm extends Component {
       form: this.form,
       items: this.local.data.composers || [],
       onchange: async items => {
-        this.local.data['composers'] = items
+        this.local.data.composers = items
         await storage.setItem('release', this.local.data)
       },
       required: false,
@@ -231,7 +231,7 @@ class ReleaseForm extends Component {
       form: this.form,
       items: this.local.data.performers || [],
       onchange: async items => {
-        this.local.data['performers'] = items
+        this.local.data.performers = items
         await storage.setItem('release', this.local.data)
       },
       required: false,
@@ -290,7 +290,7 @@ class ReleaseForm extends Component {
     const releaseDate = input({
       type: 'hidden',
       name: 'release_date',
-      value: values['release_date']
+      value: values.release_date
     })
 
     const submitButton = button({

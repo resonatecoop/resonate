@@ -53,6 +53,7 @@
     "@resonate/icon-element": "file:../packages/icon-element",
     "@resonate/input-element": "file:../packages/input-element",
     "@resonate/link-element": "file:../packages/link-element",
+    "@resonate/rangeslider": "file:../packages/rangeslider",
     "@resonate/schemas": "file:../packages/schemas",
     "@resonate/tachyons": "file:../packages/tachyons",
     "@resonate/textarea-element": "file:../packages/textarea-element",
@@ -70,6 +71,7 @@
     "nanoanimation": "^2.1.0",
     "nanologger": "^1.3.1",
     "nanostate": "^1.2.1",
+    "sortablejs": "^1.10.0-rc3",
     "validate-formdata": "^2.1.0",
     "validator": "^10.11.0"
   }

@@ -59,12 +59,14 @@ function app () {
     function setMeta () {
       const title = {
         '/': 'Upload release',
-        releases: 'Releases'
+        tracks: 'Tracks',
+        artworks: 'Artworks',
+        releases: 'Releases',
+        'releases/:id': 'Release',
+        'releases/:id/tracks': 'Add tracks'
       }[state.route]
 
       if (!title) return
-
-      state.shortTitle = title
 
       const fullTitle = setTitle(title)
 

@@ -1,16 +1,23 @@
+/* global XMLHttpRequest */
+
 const Component = require('choo/component')
 const html = require('choo/html')
 const nanostate = require('nanostate')
 const validateFormdata = require('validate-formdata')
+const ProgressBar = require('./progress-bar')
 
 const MAX_FILE_SIZE_IMAGE = 5242880 // 5MB
-const MAX_FILE_SIZE_AIFF = 52428800 // 50MB
 
 class Uploader extends Component {
-  constructor (name, state, emit) {
-    super(name)
+  constructor (id, state, emit) {
+    super(id)
 
-    this.name = name
+    this.local = state.components[id] = {}
+    this.state = state
+    this.emit = emit
+
+    this.local.progress = 0
+
     this.artwork = ''
     this.formats = ['audio/mp4']
 
@@ -40,6 +47,8 @@ class Uploader extends Component {
       values: {},
       errors: {}
     }
+
+    this.progressBar = this.state.cache(ProgressBar, 'progress-upload')
 
     const errors = this.form.errors
 
@@ -74,9 +83,36 @@ class Uploader extends Component {
           </div>
           <p class="ma0 pa0 message warning">${errors[`inputFile-${this.name}`] ? errors[`inputFile-${this.name}`].message : ''}</p>
           <p class="lh-copy ma0 pa0 f6 grey">For best results, upload a JPG or PNG at ${this.ratio}</p>
+          <div class="flex flex-column mt2">
+            ${this.progressBar.render({ progress: this.local.progress })}
+          </div>
         </div>
       </div>
     `
+  }
+
+  futch (url, opts = {}, onProgress) {
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest()
+      xhr.upload.addEventListener('progress', onProgress)
+      xhr.upload.addEventListener('loadend', () => {
+        console.log('Ended')
+      })
+      xhr.open(opts.method || 'GET', url, true)
+      xhr.withCredentials = true
+
+      for (var k in opts.headers || {}) {
+        xhr.setRequestHeader(k, opts.headers[k])
+      }
+
+      xhr.onload = e => {
+        resolve(e.target.responseText)
+      }
+
+      xhr.onerror = reject
+
+      xhr.send(opts.body)
+    })
   }
 
   onDragOver (e) {
@@ -108,32 +144,18 @@ class Uploader extends Component {
 
     const files = e.target.files
 
-    for (let file of files) {
+    for (const file of files) {
       const reader = new window.FileReader()
       const size = file.size
-      const type = file.type
 
-      const image = ((/(image\/gif|image\/jpg|image\/jpeg|svg|image\/webp|image\/png)/).test(file.type))
-      const music = ((/audio\/mpeg|audio\/mp3|audio\/flac|audio\/mp4|audio\/ogg|audio\/x+|wav/).test(file.type))
-      // const video = ((/video\/mp4/).test(file.type))
+      const image = ((/(image\/jpg|image\/jpeg|image\/png)/).test(file.type))
 
-      if (!image && !music) {
+      if (!image) {
         this.machine.emit('reject')
         return this.rerender()
       }
 
       if (image) {
-        switch (type) {
-          case 'image/jpg':
-          case 'image/jpeg':
-          case 'image/png':
-          case 'image/gif':
-            break
-          default:
-            this.machine.emit('reject')
-            return this.rerender()
-        }
-
         if (size > MAX_FILE_SIZE_IMAGE) {
           this.machine.emit('reject')
           return this.rerender()
@@ -141,7 +163,7 @@ class Uploader extends Component {
 
         // Load some artwork
         const blob = new window.Blob([file], {
-          'type': file.type
+          type: file.type
         })
 
         reader.onload = e => {
@@ -155,52 +177,37 @@ class Uploader extends Component {
             this.validator.validate(`inputFile-${this.name}`, { width: this.width, height: this.height })
             this.rerender()
           }
+
+          const formData = new window.FormData()
+          formData.append('uploads', file)
+
+          const onProgress = (event) => {
+            if (event.lengthComputable) {
+              const progress = event.loaded / event.total * 100
+              this.local.progress = progress
+              this.progressBar.slider.update({
+                value: this.local.progress
+              })
+            } else {
+              console.log('unable to compute')
+              // Unable to compute progress information since the total size is unknown
+            }
+          }
+
+          this.futch('/api/upload',
+            {
+              method: 'POST',
+              body: formData
+            },
+            onProgress
+          ).then(() => {
+            console.log('Done uploading')
+          })
+
           this.rerender()
         }
 
         reader.readAsDataURL(blob)
-      }
-
-      if (music) {
-        switch (type) {
-          case 'audio/wav':
-          case 'audio/flac':
-          case 'audio/aiff':
-            if (size < MAX_FILE_SIZE_AIFF) {
-              this.machine.emit('reject')
-              return this.rerender()
-            }
-            break
-          default:
-            console.log('do stuff')
-        }
-
-        reader.onload = (e) => {
-          this.src = e.target.result
-
-          this.rerender()
-
-          /*
-
-          const formData = new window.FormData()
-          formData.append('myFile', file)
-
-          const options = {
-            method: 'POST',
-            url: `/api`,
-            body: formData
-          }
-
-          xhr(options, (err, res, body) => {
-            if (err) { return }
-            const json = JSON.parse(body)
-            const tags = json.data.format.tags
-            state.tags = tags
-          })
-          */
-        }
-
-        reader.readAsDataURL(file)
       }
     }
   }

@@ -17,6 +17,7 @@ app.use(require('./stores/tracks')())
 app.use(require('./stores/artworks')())
 
 app.route('/', Layout(require('./views/main')))
+app.route('/profile', lazy(() => import('./views/profile')))
 app.route('/releases', lazy(() => import('./views/releases')))
 app.route('/releases/:id', lazy(() => import('./views/releases/item')))
 app.route('/releases/:id/update', lazy(() => import('./views/releases/update')))
