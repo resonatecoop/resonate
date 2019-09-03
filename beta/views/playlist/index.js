@@ -1,6 +1,6 @@
 const html = require('choo/html')
 const Playlist = require('@resonate/playlist-component')
-const viewLayout = require('../elements/view-layout')
+const viewLayout = require('../../elements/view-layout')
 
 module.exports = PlaylistView
 

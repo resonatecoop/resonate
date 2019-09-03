@@ -81,7 +81,6 @@ class Links extends Component {
   async load () {
     const items = await this.getLinks(this.uid)
     morph(this.element.querySelector('.links'), this.renderLinks(items))
-    console.log(items)
   }
 
   update (props) {

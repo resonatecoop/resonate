@@ -3,7 +3,7 @@ const html = require('choo/html')
 const Albums = require('../../components/albums')
 const Artists = require('../../components/artists')
 const ProfileHeader = require('../../components/profile-header')
-const ProfileHeaderImage = require('../../components/profile-header-image')
+const ProfileHeaderImage = require('../../components/profile-header/image')
 const socialLinks = require('../../elements/social-buttons')
 const viewLayout = require('../../elements/view-layout')
 

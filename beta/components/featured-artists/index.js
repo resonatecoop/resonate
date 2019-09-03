@@ -1,14 +1,14 @@
-const logger = require('nanologger')
-const log = logger('featured-labels')
-const Nanocomponent = require('nanocomponent')
+const nanologger = require('nanologger')
+const log = nanologger('featured-artists')
+const Nanocomponent = require('choo/component')
 const compare = require('nanocomponent/compare')
 const assert = require('assert')
 const html = require('choo/html')
 const clone = require('shallow-clone')
-const Labels = require('./labels')
+const Artists = require('../artists')
 const storage = require('localforage')
 
-class FeaturedLabels extends Nanocomponent {
+class FeaturedArtists extends Nanocomponent {
   constructor (name, state, emit) {
     super(name)
 
@@ -26,15 +26,16 @@ class FeaturedLabels extends Nanocomponent {
     this.title = props.title
     this.ids = clone(props.ids)
 
-    const labels = this.state.cache(Labels, this.name + '-list').render({
+    const artists = this.state.cache(Artists, this.name + '-list').render({
       items: this.items,
+      shuffle: true,
       pagination: false
     })
 
     return html`
       <section class="flex flex-column flex-auto w-100">
         <h2 class="lh-title ml3 mt4 mb3 ttc f3 normal">${this.title}</h2>
-        ${labels}
+        ${artists}
       </section>
     `
   }
@@ -72,4 +73,4 @@ class FeaturedLabels extends Nanocomponent {
   }
 }
 
-module.exports = FeaturedLabels
+module.exports = FeaturedArtists

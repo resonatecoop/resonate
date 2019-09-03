@@ -1,18 +1,51 @@
-const Nanocomponent = require('choo/component')
+const Component = require('choo/component')
 const compare = require('nanocomponent/compare')
 const html = require('choo/html')
 const clone = require('shallow-clone')
-const Artist = require('./artist')
 const nanostate = require('nanostate')
 const nanologger = require('nanologger')
-const Loader = require('./play-count')
+const Loader = require('../play-count')
 const Pagination = require('@resonate/pagination')
+const css = require('sheetify')
+const prefix = css`
+  @custom-media --breakpoint-not-small screen and (min-width: 30em);
+  @custom-media --breakpoint-medium screen and (min-width: 30em) and (max-width: 60em);
+  @custom-media --breakpoint-large screen and (min-width: 60em);
 
-class Artists extends Nanocomponent {
+  @media(--breakpoint-large) {
+    :host:first-child {
+      width: 40%;
+      margin-bottom: -1px;
+    }
+  }
+`
+
+class LabelItem extends Component {
+  createElement (props) {
+    const { avatar: image = {}, id, name } = props
+    const fallback = image.original || '/assets/default.png'
+    const { large: imageUrl = fallback } = image
+
+    return html`
+      <li class="${prefix} fl w-50 w-third-m w-20-l pa3 grow">
+        <a class="db aspect-ratio aspect-ratio--1x1 bg-dark-gray" href="/labels/${id}">
+          <img aria-label=${name} src=${imageUrl} decoding="auto" class="aspect-ratio--object">
+          <span class="absolute bottom-0 truncate w-100 h2" style="top:100%;">
+            ${name}
+          </span>
+        </a>
+      </li>
+    `
+  }
+
+  update () {
+    return false
+  }
+}
+
+class Labels extends Component {
   constructor (id, state, emit) {
     super(id)
-
-    this.items = []
 
     this.state = state
     this.emit = emit
@@ -20,7 +53,9 @@ class Artists extends Nanocomponent {
 
     this.log = nanologger(id)
 
-    this.renderArtists = this.renderArtists.bind(this)
+    this.items = []
+
+    this.renderLabels = this.renderLabels.bind(this)
     this.renderError = this.renderError.bind(this)
     this.renderPlaceholder = this.renderPlaceholder.bind(this)
 
@@ -42,84 +77,79 @@ class Artists extends Nanocomponent {
     })
 
     this.local.loader.on('loader:toggle', () => {
+      this.log.info('loader:toggle', this.local.loader.state.loader)
       if (this.element) this.rerender()
     })
 
     this.local.machine.on('notFound', () => {
+      this.log.info('notFound')
       if (this.element) this.rerender()
     })
 
+    this.local.machine.on('loading', () => {
+      this.log.info('loading')
+    })
+
     this.local.machine.on('error', () => {
+      this.log.error('error')
+      if (this.element) this.rerender()
+    })
+
+    this.local.machine.on('data', () => {
+      this.log.info('data')
       if (this.element) this.rerender()
     })
   }
 
   createElement (props = {}) {
     const self = this
-    const { numberOfPages = 1, pagination: paginationEnabled = true } = props
+    const { items = [], pagination: paginationEnabled = true, numberOfPages = 1 } = props
 
-    this.local.shuffle = props.shuffle
-    this.local.items = props.items || []
+    this.items = clone(items)
 
-    const artists = {
+    const labels = {
       loading: {
         on: this.renderLoader,
         off: () => {}
       }[this.local.loader.state.loader](),
       notFound: this.renderPlaceholder(),
       error: this.renderError()
-    }[this.local.machine.state] || this.renderArtists()
+    }[this.local.machine.state] || this.renderLabels()
 
     let paginationEl
 
-    if (paginationEnabled) {
-      paginationEl = new Pagination('artists-pagination', this.state, this.emit).render({
+    if (paginationEnabled && numberOfPages > 1) {
+      paginationEl = new Pagination('labels-pagination', this.state, this.emit).render({
         navigate: function (pageNumber) {
-          const path = !/artists/.test(this.state.href) ? '/artists' : ''
-          self.emit(self.state.events.PUSHSTATE, self.state.href + `${path}?page=${pageNumber}`)
+          self.emit(self.state.events.PUSHSTATE, self.state.href + `?page=${pageNumber}`)
         },
-        path: !/artists/.test(this.state.href) ? '/artists' : '',
         numberOfPages
       })
     }
 
     return html`
       <div class="flex flex-column flex-auto w-100">
-        ${artists}
+        ${labels}
         ${paginationEl}
       </div>
     `
   }
 
-  renderArtists () {
-    const self = this
-
-    let items = clone(this.local.items)
-
-    if (this.local.shuffle) {
-      items = items.sort(() => Math.random() - 0.5)
-    }
-
+  renderLabels () {
+    const items = this.items.map(({ avatar, id, name }) => {
+      return new LabelItem().render({ avatar, id, name })
+    })
     return html`
-      <ul class="artists list ma0 pa0 cf">
-        ${items.map(artistItem)}
+      <ul class="labels list ma0 pa0 cf">
+        ${items}
       </ul>
     `
-
-    function artistItem (props) {
-      const { id } = props
-      const artist = self.state.cache(Artist, `artist-item-${id}`)
-      return artist.render(props)
-    }
   }
 
   renderError () {
     return html`
       <div class="flex flex-column flex-auto w-100 items-center justify-center">
-        <p>Failed to fetch artists</p>
-        <div>
-          <button onclick=${() => this.emit('labels:reload', this.state.params.id)}>Try again</button>
-        </div>
+        <p>Failed to fetch labels</p>
       </div>
     `
   }
@@ -127,7 +157,7 @@ class Artists extends Nanocomponent {
   renderPlaceholder () {
     return html`
       <div class="flex flex-column flex-auto w-100 items-center justify-center">
-        <p class="tc">👽 No artists found</p>
+        <p class="tc">No labels found</p>
       </div>
     `
   }
@@ -138,7 +168,6 @@ class Artists extends Nanocomponent {
       count: 3,
       options: { animate: true, repeat: true, reach: 9, fps: 10 }
     })
-
     return html`
       <div class="flex flex-column flex-auto items-center justify-center h5">
         ${loader}
@@ -148,10 +177,10 @@ class Artists extends Nanocomponent {
 
   update (props) {
     if (props) {
-      return compare(props.items, this.local.items)
+      return compare(props.items, this.items)
     }
     return false
   }
 }
 
-module.exports = Artists
+module.exports = Labels

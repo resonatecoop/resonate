@@ -5,14 +5,14 @@ const nanologger = require('nanologger')
 const nanostate = require('nanostate')
 const button = require('@resonate/button')
 const Dialog = require('@resonate/dialog-component')
-const ThemeSwitcher = require('./theme-switcher')
-const link = require('../elements/link')
-const AddCredits = require('./topup-credits')
+const link = require('@resonate/link-element')
+const ThemeSwitcher = require('../theme-switcher')
+const AddCredits = require('../topup-credits')
 
 const SITE_DOMAIN = process.env.SITE_DOMAIN || 'resonate.localhost'
 const BASE_URL = 'https://' + SITE_DOMAIN
 const STRIPE_URL = 'https://js.stripe.com/v3/'
-const loadScript = require('../lib/load-script')
+const loadScript = require('../../lib/load-script')
 
 const {
   background: bg,
@@ -97,7 +97,7 @@ class Header extends Nanocomponent {
         `,
         onClose: function (e) {
           if (this.element.returnValue === 'yes') {
-            emit('logout')
+            emit('logout', true)
           }
           self.machine.emit('logoutDialog:close')
           this.destroy()

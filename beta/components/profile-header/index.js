@@ -6,19 +6,16 @@ const html = require('choo/html')
  */
 
 class ProfileHeader extends Nanocomponent {
-  constructor (name, state, emit) {
-    super(name)
+  constructor (id, state, emit) {
+    super(id)
 
+    this.local = state.components[id] = {}
     this.state = state
     this.emit = emit
-
-    this.state = {
-      data: null
-    }
   }
 
   createElement (props) {
-    this.state.data = props.data
+    this.local.data = props.data
 
     const { avatar: image = {}, name, country } = props.data
     const fallback = image.original || '/assets/default.png'
@@ -39,23 +36,8 @@ class ProfileHeader extends Nanocomponent {
     `
   }
 
-  renderLabel (props) {
-    const { label } = props
-
-    if (!label) return
-
-    return html`
-      <p class="f7 ma0">
-        Label: <a href="/labels/${label.id}" class="color-inherit dim no-underline">
-          ${label.name}
-        </a>
-      </p>
-    `
-  }
-
   update (props) {
-    return props.data.id !== this.state.data.id ||
-      props.data.uid !== this.state.data.uid
+    return props.data.id !== this.local.data.id
   }
 }
 

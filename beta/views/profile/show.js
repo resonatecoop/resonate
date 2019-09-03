@@ -1,4 +1,4 @@
-const ProfileHeaderImage = require('../../components/profile-header-image')
+const ProfileHeaderImage = require('../../components/profile-header/image')
 const ProfileHeader = require('../../components/profile-header')
 const button = require('@resonate/button')
 const html = require('choo/html')

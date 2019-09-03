@@ -1,5 +1,4 @@
 const viewLayout = require('../../elements/view-layout')
-
 const html = require('choo/html')
 const TrackDetails = require('../../components/track-details')
 

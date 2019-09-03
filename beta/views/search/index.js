@@ -1,11 +1,9 @@
 const html = require('choo/html')
-const matchMedia = require('../lib/match-media')
-
+const matchMedia = require('../../lib/match-media')
 const Playlist = require('@resonate/playlist-component')
-const Artists = require('../components/artists')
-const Labels = require('../components/labels')
-
-const viewLayout = require('../elements/view-layout')
+const Artists = require('../../components/artists')
+const Labels = require('../../components/labels')
+const viewLayout = require('../../elements/view-layout')
 
 module.exports = SearchView
 

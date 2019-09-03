@@ -1,8 +1,7 @@
 const html = require('choo/html')
-const viewLayout = require('../elements/view-layout')
-
-const FeaturedArtists = require('../components/featured-artists')
-const FeaturedLabels = require('../components/featured-labels')
+const viewLayout = require('../../elements/view-layout')
+const FeaturedArtists = require('../../components/featured-artists')
+const FeaturedLabels = require('../../components/featured-labels')
 
 module.exports = DashboardView
 

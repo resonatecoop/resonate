@@ -7,10 +7,10 @@ const icon = require('@resonate/icon-element')
 const button = require('@resonate/button')
 const Button = require('@resonate/button-component')
 const Component = require('choo/component')
-const PaymentMethods = require('./payment-methods')
+const PaymentMethods = require('../payment-methods')
 const nanologger = require('nanologger')
 const log = nanologger('topup-credits')
-const vatEu = require('../lib/country-codes') // vat eu member states
+const vatEu = require('../../lib/country-codes') // vat eu member states
 
 const iconStyle = css`
   :host {

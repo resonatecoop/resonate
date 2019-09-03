@@ -217,30 +217,27 @@ function app () {
           if (response.status !== 401) {
             const { accessToken: token, clientId } = response
             state.api = generateApi({ token, clientId, user: state.api.user })
-
-            emitter.emit('api:ok')
-
-            emitter.emit(state.events.RENDER)
           } else {
             emitter.emit('logout')
           }
         } else {
           state.api = generateApi()
-
-          emitter.emit('api:ok')
-
-          emitter.emit(state.events.RENDER)
         }
       } catch (err) {
         log.error(err)
+      } finally {
+        emitter.emit('api:ok')
+        emitter.emit(state.events.RENDER)
       }
     })
 
-    emitter.on('logout', () => {
+    emitter.on('logout', (redirect = false) => {
       state.user = {}
       state.api = generateApi()
       storage.clear() // clear everything in indexed db
-      emitter.emit(state.events.PUSHSTATE, '/login')
+      if (redirect) {
+        emitter.emit(state.events.PUSHSTATE, '/login')
+      }
     })
 
     emitter.on(state.events.DOMCONTENTLOADED, () => {
@@ -260,11 +257,8 @@ function app () {
 
       emitter.on('api:ok', () => {
         state.resolved = true
-
         emitter.emit(state.events.RENDER)
-
         log.info('api ok')
-
         emitter.emit(`route:${state.route}`)
       })
     })

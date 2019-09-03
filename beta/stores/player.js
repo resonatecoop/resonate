@@ -1,12 +1,10 @@
-/**
- * Logging
- */
-
+const { isBrowser } = require('browser-or-node')
 const PlayCount = require('@resonate/play-count')
 const renderCounter = require('@resonate/counter')
 const logger = require('nanologger')
 const log = logger('store:player')
 const storage = require('localforage')
+const Player = require('@resonate/player-component')
 
 module.exports = player
 
@@ -35,6 +33,8 @@ function setPlaycount (props) {
 
 function player () {
   return (state, emitter) => {
+    const player = isBrowser ? state.cache(Player, 'player-footer') : {}
+
     state.track = state.track || {
       data: {}
     }
@@ -54,28 +54,34 @@ function player () {
         if (response.status === 401) {
           log.info('User is not authorized to play')
 
-          return emitter.emit('notify', { message: 'Not authorized to play' })
+          player.playback.emit('stop')
+
+          emitter.emit('notify', { message: 'You are not logged in' })
+
+          return emitter.emit('logout', true) // logout and redirect
         }
 
-        const { count, total } = response.data
+        if (response.data && response.status === 'ok') {
+          const { count, total } = response.data
 
-        if (count >= 1) {
-          setPlaycount({ count, track })
+          if (count >= 1) {
+            setPlaycount({ count, track })
 
-          log.info(`Tracked a play count for ${track.title}`)
-        }
+            log.info(`Tracked a play count for ${track.title}`)
+          }
 
-        const user = await storage.getItem('user')
+          const user = await storage.getItem('user')
 
-        if (user) {
-          await storage.setItem('user', Object.assign(user, { credits: total }))
+          if (user) {
+            await storage.setItem('user', Object.assign(user, { credits: total }))
 
-          state.user = await storage.getItem('user')
-
-          emitter.emit(state.events.RENDER)
+            state.user = await storage.getItem('user')
+          }
         }
       } catch (err) {
         log.error(err)
+      } finally {
+        emitter.emit(state.events.RENDER)
       }
     })
   }
