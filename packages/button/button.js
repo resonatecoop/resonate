@@ -1,47 +1,59 @@
 const html = require('nanohtml')
-const icon = require('icon-element')
+const icon = require('@resonate/icon-element')
 const { iconFill: defaultIconFill, foreground } = require('@resonate/theme-skins')
+const classNames = require('classnames')
 
-function Button (props) {
+function Button (props = {}) {
   const {
-    value = '',
-    prefix, // prefix for tachyons or class name list
-    type = 'button',
+    prefix,
     disabled = false,
     iconName,
     iconFill = defaultIconFill,
     iconSize = 'sm',
-    onClick: clickHandler = () => {},
     text
   } = props
 
+  const buttonType = props.style || 'default'
+
   const style = {
-    default: `${foreground} flex-shrink-0 b--black ba bw b pv2 ph4 f5 ${!disabled ? 'grow' : 'o-50'}`,
-    blank: `bg-transparent flex-shrink-0 bn f5 ${!disabled ? 'grow' : 'o-50'}`,
-    none: ''
-  }[props.style || 'default']
+    default: `${foreground} b--black ba bw b pv2 ph4`,
+    blank: 'bg-transparent bn'
+  }[buttonType]
 
-  const size = {
-    none: '',
-    small: 'w2 h2',
-    medium: 'w3 h3'
-  }[props.size || 'medium']
+  const small = props.size === 'small'
 
-  const classList = [style, size, prefix]
-    .filter(Boolean)
-    .join(' ')
+  let medium = false
+
+  if (!props.size || props.size === 'medium') {
+    medium = true
+  }
+
+  const attrs = {
+    onclick: props.onClick || null,
+    value: props.value || '',
+    type: props.type || 'button',
+    disabled: disabled || false,
+    class: classNames(prefix, style, {
+      'flex-shrink-0': true,
+      f5: true,
+      btn: true,
+      grow: !disabled,
+      'o-50': disabled,
+      w2: small,
+      h2: small,
+      w3: medium,
+      h3: medium
+    })
+  }
+
+  const innerBtnClass = classNames('flex', 'items-center', { 'justify-center': !text })
 
   return html`
-    <button
-      value=${value}
-      type=${type}
-      disabled=${disabled}
-      class=${classList}
-      onclick=${clickHandler}>
-        <div class="flex items-center ${!text ? 'justify-center' : ''}">
-          ${iconName ? icon(iconName, { class: `icon icon--${iconSize} ${iconFill}` }) : ''}
-          ${text ? html`<span class=${iconName ? 'pl2' : ''}>${text}</span>` : ''}
-        </div>
+    <button ${attrs}>
+      <div class=${innerBtnClass}>
+        ${iconName ? icon(iconName, { class: iconFill, size: iconSize }) : ''}
+        ${text ? html`<span class=${iconName ? 'pl2' : ''}>${text}</span>` : ''}
+      </div>
     </button>
   `
 }

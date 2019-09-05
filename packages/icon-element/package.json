@@ -1,6 +1,6 @@
 {
   "name": "@resonate/icon-element",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Icon element",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "url": "https://github.com/resonatecoop/stream2own/issues"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "nanohtml": "^1.4.0"
   }
 }

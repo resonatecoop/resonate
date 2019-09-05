@@ -199,7 +199,13 @@ function app () {
       }
     })
 
-    emitter.on('users:auth', async () => {
+    emitter.on(state.events.VISIBILITYCHANGE, (vis) => {
+      if (vis === 'VISIBLE') {
+        emitter.emit('users:auth', false)
+      }
+    })
+
+    emitter.on('users:auth', async (reload = true) => {
       try {
         const { user, clientId } = await promiseHash({
           user: storage.getItem('user'),
@@ -226,7 +232,7 @@ function app () {
       } catch (err) {
         log.error(err)
       } finally {
-        emitter.emit('api:ok')
+        if (reload) emitter.emit('api:ok')
         emitter.emit(state.events.RENDER)
       }
     })
