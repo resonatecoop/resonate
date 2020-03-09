@@ -1,5 +1,9 @@
 FROM node:12-alpine as builder
 
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git
+
 WORKDIR /var/www/app
 
 COPY . .
