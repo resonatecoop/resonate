@@ -16,6 +16,8 @@ FROM node:12-alpine
 
 RUN apk --no-cache add git
 
+WORKDIR /var/www/app
+
 COPY . .
 
 RUN npx lerna bootstrap
