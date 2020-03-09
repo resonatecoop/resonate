@@ -1,6 +1,6 @@
 const promiseHash = require('promise-hash/lib/promise-hash')
 const setTitle = require('../lib/title')
-const isUrl = require('validator/lib/isUrl')
+const isUrl = require('validator/lib/isURL')
 const storage = require('localforage')
 storage.config({
   name: 'resonate',
