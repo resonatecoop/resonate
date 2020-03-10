@@ -1,14 +1,13 @@
-require('babel-polyfill')
-
 const { isBrowser } = require('browser-or-node')
-
-const css = require('sheetify')
+const lazy = require('choo-lazy-view')
 const choo = require('choo')
 const plugins = require('@resonate/choo-plugins')
-
-css('./index.css')
+const Layout = require('./elements/layout')
 
 const app = choo()
+
+app.use(lazy)
+app.use(require('choo-meta')())
 
 if (isBrowser) {
   require('web-animations-js/web-animations.min')
@@ -45,6 +44,25 @@ app.use(require('./stores/consent')())
 app.use(require('./stores/player')())
 app.use(require('./stores/search')())
 
-require('./routes')(app)
+app.route('/', Layout(require('./views/dashboard')))
+app.route('/playlist/:type', Layout(require('./views/playlist')))
+app.route('/artists', lazy(() => import('./views/artists')))
+app.route('/artists/:uid', Layout(require('./views/artists/show')))
+app.route('/artists/:uid/albums', Layout(require('./views/artists/albums')))
+app.route('/artists/:uid/tracks', Layout(require('./views/artists/tracks')))
+app.route('/artists/:uid/:tab', Layout(require('./views/artists/show')))
+app.route('/labels', Layout(require('./views/labels/list')))
+app.route('/labels/:uid/albums', Layout(require('./views/labels/albums')))
+app.route('/labels/:uid/artists', Layout(require('./views/labels/artists')))
+app.route('/labels/:uid', Layout(require('./views/labels/show')))
+app.route('/labels/:uid/:tab', Layout(require('./views/labels/show')))
+app.route('/tracks/:id', Layout(require('./views/tracks/show')))
+app.route('/login', Layout(require('./views/login')))
+app.route('/search/:q', Layout(require('./views/search')))
+app.route('/search/:q/:tab', Layout(require('./views/search')))
+app.route('/account', Layout(require('./views/profile/show')))
+app.route('/library/:type', Layout(require('./views/playlist')))
+app.route('/:user/library/:type', Layout(require('./views/playlist')))
+app.route('/:user/*', lazy(() => import('./views/404')))
 
 module.exports = app.mount('#app')

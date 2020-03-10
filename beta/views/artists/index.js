@@ -2,8 +2,9 @@ const html = require('choo/html')
 const Artists = require('../../components/artists')
 const { background } = require('@resonate/theme-skins')
 const viewLayout = require('../../elements/view-layout')
+const Layout = require('../../elements/layout')
 
-module.exports = ArtistsView
+module.exports = Layout(ArtistsView)
 
 function ArtistsView () {
   return (state, emit) => {

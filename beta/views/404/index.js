@@ -1,7 +1,8 @@
 const html = require('choo/html')
 const viewLayout = require('../../elements/view-layout')
+const Layout = require('../../elements/layout')
 
-module.exports = NotFound
+module.exports = Layout(NotFound)
 
 function NotFound () {
   return (state, emit) => {

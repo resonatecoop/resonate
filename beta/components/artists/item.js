@@ -12,7 +12,7 @@ class Artist extends Component {
 
   createElement (props) {
     const { avatar: image = {}, id, name } = props
-    const fallback = image.original || '/assets/default.png'
+    const fallback = image.original || '/images/default.png'
     const { large = fallback } = image
 
     return html`

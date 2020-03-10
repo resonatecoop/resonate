@@ -4,11 +4,11 @@
   "version": "6.0.0-9",
   "private": true,
   "scripts": {
-    "build": "bankai build index.js",
-    "dev": "bankai start index.js -d",
+    "build": "jalla build index.js",
+    "dev": "jalla start index.js -d",
     "create": "choo-scaffold",
-    "inspect": "bankai inspect index.js",
-    "start": "bankai start index.js",
+    "inspect": "jalla inspect index.js",
+    "start": "node server.js",
     "test": "standard && npm run test-deps",
     "test-deps": "dependency-check . && dependency-check . --extra --no-dev -i @resonate/tachyons",
     "test-browser": "browserify test/browser/index.js | tape-run | tap-format-spec"
@@ -24,39 +24,22 @@
       ]
     ]
   },
-  "browser": {
-    "assert": "nanoassert"
-  },
   "browserslist": [
     "last 1 version",
     ">1%",
     "not dead"
   ],
-  "sheetify": {
-    "transform": [
-      [
-        "sheetify-postcss",
-        {
-          "plugins": [
-            [
-              "postcss-import"
-            ],
-            [
-              "postcss-preset-env",
-              {
-                "stage": 1,
-                "features": {
-                  "nesting-rules": true
-                }
-              }
-            ],
-            [
-              "postcss-custom-media"
-            ]
-          ]
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "postcss-preset-env": {
+        "stage": 1,
+        "features": {
+          "nesting-rules": true
         }
-      ]
-    ]
+      },
+      "postcss-custom-media": {}
+    }
   },
   "standard": {
     "ignore": [
@@ -88,6 +71,7 @@
     "browser-or-node": "^1.1.0",
     "choo": "7.0.0",
     "choo-devtools": "^3.0.2",
+    "choo-lazy-view": "^1.0.2",
     "choo-meta": "^1.0.4",
     "choo-notification": "^1.0.0",
     "choo-service-worker": "^2.4.0",
@@ -103,6 +87,7 @@
     "normalize-url": "^2.0.1",
     "promise-hash": "^1.2.0",
     "query-string": "^6.4.2",
+    "resolve": "1.15.0",
     "shallow-clone": "^3.0.0",
     "sheetify": "^7.3.2",
     "validate-formdata": "^2.1.0",

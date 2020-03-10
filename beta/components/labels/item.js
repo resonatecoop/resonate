@@ -4,7 +4,7 @@ const html = require('choo/html')
 class LabelItem extends Component {
   createElement (props) {
     const { avatar: image = {}, id, name } = props
-    const fallback = image.original || '/assets/default.png'
+    const fallback = image.original || '/images/default.png'
     const { large: imageUrl = fallback } = image
 
     return html`
