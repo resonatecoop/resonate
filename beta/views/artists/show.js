@@ -1,4 +1,3 @@
-const { isNode } = require('browser-or-node')
 const raw = require('choo/html/raw')
 const html = require('choo/html')
 const icon = require('@resonate/icon-element')
@@ -15,10 +14,6 @@ module.exports = ArtistView
 
 function ArtistView () {
   return (state, emit) => {
-    const id = Number(state.params.uid)
-    if (isNaN(id)) return emit(state.events.PUSHSTATE, '/')
-    if (isNode) emit('prefetch:artist', id)
-
     return viewLayout((state, emit) => {
       return html`
         <section id="artist-profile" class="flex flex-column flex-auto w-100">
@@ -173,7 +168,7 @@ function ArtistView () {
         <section id="artist-albums" class="flex-auto">
           <div class="flex">
             <h3 class="fw3 relative lh-title">
-              All releases
+              Albums
               ${renderTotal(count)}
             </h3>
           </div>
@@ -213,7 +208,7 @@ function ArtistView () {
 
       return html`
         <section id="members" class="flex-auto">
-          <h3 class="fw3 f4 lh-title">Member of</h3>
+          <h3 class="lh-title">Member of</h3>
 
           <div class="mw5">
             ${state.cache(LabelItem, `labels-${id}`, state, emit).render(label)}

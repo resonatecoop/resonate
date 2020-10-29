@@ -1,26 +1,24 @@
 /* global Headers, fetch */
 
+const queryString = require('query-string')
 const isObject = require('isobject')
 const Ajv = require('ajv')
 
 const ajv = new Ajv({
-  allErrors: true,
-  removeAdditional: true,
-  coerceTypes: true
+  allErrors: true
 })
-
-require('ajv-keywords')(ajv, ['formatMinimum', 'formatMaximum'])
 
 const request = (path = '/', options = {}) => {
   const {
     auth = false,
-    clientId,
-    credentials = 'include',
     data,
     domain,
+    credentials = 'include',
     lang = 'en',
     method = 'GET',
     mode = 'cors',
+    multipart,
+    clientId,
     prefix,
     scheme,
     timeout = 15000,
@@ -32,26 +30,29 @@ const request = (path = '/', options = {}) => {
   }
 
   const param = path.match(new RegExp(/\[:(.*?)\]/)) // TODO handle multiple params
+  const params = []
 
   if (param) {
-    path = path.replace(param[0], data[param[1]])
-    delete data[param[1]]
+    params.push(param[1])
   }
+
+  const stringified = queryString.stringify(method === 'GET' ? data : { client_id: clientId })
 
   let body
 
-  if (['post', 'put', 'delete'].includes(method.toLowerCase())) {
-    body = data
+  if (/post|put|delete/.test(method.toLowerCase())) {
+    body = Object.assign({}, data)
   }
 
-  const baseURL = scheme + domain
-  const url = prefix + path
-
-  const absURL = new URL(url, baseURL)
-
-  if (method.toLowerCase() === 'get') {
-    absURL.search = new URLSearchParams(data)
-  }
+  const url = [
+    scheme,
+    domain,
+    prefix,
+    param ? path.replace(param[0], data[param[1]]) : path,
+    stringified ? '?' + stringified : false
+  ]
+    .filter(Boolean)
+    .join('')
 
   const headers = new Headers()
 
@@ -61,11 +62,15 @@ const request = (path = '/', options = {}) => {
 
   headers.append('Accept-Language', lang)
 
-  headers.append('Content-Type', 'application/json')
-  body = JSON.stringify(body)
+  if (multipart) {
+    body = data.formData
+  } else {
+    headers.append('Content-Type', 'application/json')
+    body = JSON.stringify(body)
+  }
 
   return Promise.race([
-    new Promise((resolve, reject) => fetch(absURL.href, {
+    new Promise((resolve, reject) => fetch(url, {
       headers,
       method,
       body,
@@ -89,6 +94,11 @@ const computeRoutes = (routes, options = {}) => {
       let schema
       let params
       let validate
+      let multipart
+
+      if (route.options) {
+        multipart = route.options.multipart
+      }
 
       if (route.schema) {
         schema = route.schema || {}
@@ -98,12 +108,14 @@ const computeRoutes = (routes, options = {}) => {
 
       obj[key] = (...args) => {
         let data = {}
-        if (isObject(args[0])) {
+        if (isObject(args[0] || multipart === true)) {
           data = args[0]
-        } else if (params) {
-          params.forEach((key, index) => {
-            data[key] = args[index]
-          })
+        } else {
+          if (params) {
+            params.forEach((key, index) => {
+              data[key] = args[index]
+            })
+          }
         }
         if (validate) {
           const valid = validate(data)

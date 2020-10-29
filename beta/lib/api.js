@@ -279,9 +279,6 @@ const generateApi = (options) => {
       }
     },
     auth: {
-      logout: {
-        path: '/oauth2/logout'
-      },
       user: {
         path: '/oauth2/user'
       },

@@ -38,65 +38,16 @@ function labels () {
     emitter.on('route:labels/:uid/albums', getLabelAlbums)
     emitter.on('route:labels/:uid/artists', getLabelArtists)
 
-    emitter.once('prefetch:labels', () => {
-      if (!state.prefetch) return
-
-      emitter.emit('labels:meta')
-
-      state.labels = state.labels || {
-        items: [],
-        numberOfPages: 1
-      }
-
-      const pageNumber = state.query.page ? Number(state.query.page) : 1
-      const request = state.api.labels.find({
-        page: pageNumber - 1,
-        limit: 20
-      }).then(response => {
-        if (response.data) {
-          state.labels.items = response.data
-          state.labels.numberOfPages = response.numberOfPages
-        }
-
-        emitter.emit(state.events.RENDER)
-      })
-
-      state.prefetch.push(request)
-    })
-
-    emitter.once('prefetch:label', (id) => {
-      if (!state.prefetch) return
-      if (!id) return
-
-      state.label = state.label || {
-        data: {},
-        artists: {
-          items: [],
-          numberOfPages: 1
-        },
-        albums: {
-          items: [],
-          numberOfPages: 1
-        },
-        tracks: []
-      }
-
-      const request = state.api.labels.findOne({ uid: id }).then(response => {
-        if (response.data) {
-          state.label.data = response.data
-        }
-
-        emitter.emit('labels:meta')
-
-        emitter.emit(state.events.RENDER)
-      })
-
-      state.prefetch.push(request)
-    })
-
     function setMeta () {
-      const { name, id, avatar = {}, description } = state.label.data
+      if (!state.label.data) {
+        const title = 'Not found'
+        state.shortTitle = title
+        return emitter.emit('meta', {
+          title
+        })
+      }
 
+      const { name = '', avatar = {} } = state.label.data
       const title = {
         labels: 'Labels',
         'labels/:uid': name,
@@ -108,31 +59,20 @@ function labels () {
 
       state.shortTitle = title
 
-      state.title = setTitle(title)
-      state.shortTitle = title
+      const fullTitle = setTitle(title)
 
       const image = {
         'labels/:uid': avatar.original || ''
       }[state.route]
 
-      const cover = {
-        'labels/:uid': avatar.cover || ''
-      }[state.route]
-
-      state.meta = {
-        title: state.title,
+      emitter.emit('meta', {
+        title: fullTitle,
         'og:image': image,
-        'og:title': state.title,
-        'og:type': 'website',
-        'og:url': `https://beta.resonate.is/labels/${id}`,
-        'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
-        'twitter:title': state.title,
-        'twitter:image': cover || image,
+        'twitter:title': fullTitle,
+        'twitter:image': image,
         'twitter:site': '@resonatecoop'
-      }
-
-      emitter.emit('meta', state.meta)
+      })
     }
 
     async function getLabels () {

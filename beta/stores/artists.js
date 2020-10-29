@@ -36,64 +36,6 @@ function artists () {
 
     state.cache(Artists, 'artists')
 
-    emitter.once('prefetch:artists', () => {
-      if (!state.prefetch) return
-
-      emitter.emit('artists:meta')
-
-      state.artists = state.artists || {
-        items: [],
-        numberOfPages: 1
-      }
-
-      const pageNumber = state.query.page ? Number(state.query.page) : 1
-      const request = state.api.artists.find({
-        page: pageNumber - 1,
-        limit: 20,
-        order: 'desc',
-        order_by: 'id'
-      }).then((response) => {
-        if (response.data) {
-          state.artists.items = response.data
-          state.artists.numberOfPages = response.numberOfPages
-        }
-
-        emitter.emit(state.events.RENDER)
-      })
-
-      state.prefetch.push(request)
-    })
-
-    emitter.once('prefetch:artist', (id) => {
-      if (!state.prefetch) return
-      if (!id) return
-
-      state.artist = state.artist || {
-        data: {},
-        tracks: [],
-        albums: {
-          items: [],
-          numberOfPages: 1
-        },
-        latestRelease: {
-          items: []
-        },
-        topTracks: [],
-        newTracks: []
-      }
-
-      const request = state.api.artists.findOne({ uid: id }).then((response) => {
-        if (response.data) {
-          state.artist.data = response.data
-        }
-
-        emitter.emit('artists:meta')
-
-        emitter.emit(state.events.RENDER)
-      })
-
-      state.prefetch.push(request)
-    })
     emitter.on('artists:meta', setMeta)
     emitter.on('artists:clear', () => {
       state.artist = {
@@ -121,7 +63,14 @@ function artists () {
     emitter.on('route:artists/:uid', getArtist)
 
     function setMeta () {
-      const { name, id, avatar = {}, description } = state.artist.data
+      if (!state.artist.data) {
+        const title = 'Not found'
+        state.shortTitle = title
+        return emitter.emit('meta', {
+          title
+        })
+      }
+      const { name = '', avatar } = state.artist.data
       const title = {
         artists: 'Artists',
         'artists/:uid': name,
@@ -130,31 +79,21 @@ function artists () {
 
       if (!title) return
 
-      state.title = setTitle(title)
       state.shortTitle = title
 
+      const fullTitle = setTitle(title)
       const image = {
-        'artists/:uid': avatar.original || '' // fallback
+        'artists/:uid': avatar ? avatar.original : ''
       }[state.route]
 
-      const cover = {
-        'artists/:uid': avatar.cover || '' // fallback ?
-      }[state.route]
-
-      state.meta = {
-        title: state.title,
-        'og:title': state.title,
-        'og:type': 'website',
-        'og:url': `https://beta.resonate.is/artists/${id}`,
+      emitter.emit('meta', {
+        title: fullTitle,
         'og:image': image,
-        'og:description': description || `Listen to ${name} on Resonate`,
         'twitter:card': 'summary_large_image',
-        'twitter:title': state.title,
-        'twitter:image': cover || image,
+        'twitter:title': fullTitle,
+        'twitter:image': image,
         'twitter:site': '@resonatecoop'
-      }
-
-      emitter.emit('meta', state.meta)
+      })
     }
 
     async function getArtistAlbums () {

@@ -44,7 +44,7 @@ class Track extends Component {
     this.log = nanologger(id)
   }
 
-  createElement (props = {}) {
+  createElement (props) {
     this.local.index = props.index
     this.local.playlist = props.playlist
     this.local.count = props.count
@@ -60,10 +60,8 @@ class Track extends Component {
       <li tabindex=0 class="track-component flex items-center w-100 mb2" onkeypress=${this._handleKeyPress}>
         <div class="flex items-center flex-auto">
           ${this.renderPlaybackButton()}
-          <div ondblclick=${this._handleDoubleClick} class="metas no-underline truncate flex flex-column pl2 pr2 items-start justify-center w-100">
-            <span class="pa0 track-title truncate f5 w-100">
-              ${this.local.track.title}
-            </span>
+          <div onclick=${(e) => e.preventDefault()} ondblclick=${this._handleDoubleClick} class="metas no-underline truncate flex flex-column pl2 pr2 items-start justify-center w-100">
+            ${renderTitle(this.local.track.title)}
             ${showArtist ? renderArtist(this.local.trackGroup[0].display_artist) : ''}
           </div>
         </div>
@@ -99,6 +97,14 @@ class Track extends Component {
             iconName: 'dropdown' // button icon
           })}
         </div>
+      `
+    }
+
+    function renderTitle (title) {
+      return html`
+        <span class="pa0 track-title truncate f5 w-100">
+          ${title}
+        </span>
       `
     }
 
@@ -218,7 +224,7 @@ class Track extends Component {
     e.preventDefault()
     e.stopPropagation()
 
-    const player = this.state.components['player-footer'] || {}
+    const player = this.state.components['player-footer']
 
     const isNew = player.src !== this.local.src
 
@@ -259,7 +265,7 @@ class Track extends Component {
   }
 
   _isActive () {
-    const player = this.state.components['player-footer'] || {}
+    const player = this.state.components['player-footer']
 
     return this.local.src === player.src
   }

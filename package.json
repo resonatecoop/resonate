@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "lerna run build --scope beta-player --stream",
-    "dev": "lerna run --scope beta-player dev --parallel",
+    "build": "lerna run build --scope beta --stream",
+    "dev": "lerna run --scope beta dev --parallel",
     "publish": "lerna publish from-package",
-    "start": "lerna run --scope beta-player start --parallel",
+    "start": "lerna run --scope beta start --parallel",
     "test": "lerna run test"
   },
   "standard": {

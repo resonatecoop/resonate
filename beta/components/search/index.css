@@ -1,6 +1,6 @@
 .search-component .search-label {
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scaleX(-1);
 }
 
 .search-component input[type="search"] {

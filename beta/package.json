@@ -1,15 +1,14 @@
 {
-  "name": "beta-player",
+  "name": "beta",
   "main": "index.js",
-  "version": "6.0.0-11",
+  "version": "6.0.0-10",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production bankai build ./bankai.js",
-    "build:jalla": "jalla build jalla.js",
-    "dev": "jalla start jalla.js -d --watch --port 8089",
+    "build": "bankai build index.js",
+    "dev": "bankai start index.js -d",
     "create": "choo-scaffold",
-    "inspect": "jalla inspect index.js",
-    "start": "node server.js",
+    "inspect": "bankai inspect index.js",
+    "start": "bankai start index.js",
     "test": "standard && npm run test-deps",
     "test-deps": "dependency-check . && dependency-check . --extra --no-dev -i @resonate/tachyons",
     "test-browser": "browserify test/browser/index.js | tape-run | tap-format-spec"
@@ -24,6 +23,9 @@
         }
       ]
     ]
+  },
+  "browser": {
+    "assert": "nanoassert"
   },
   "browserslist": [
     "last 1 version",
@@ -56,18 +58,6 @@
       ]
     ]
   },
-  "postcss": {
-    "plugins": {
-      "postcss-import": {},
-      "postcss-preset-env": {
-        "stage": 1,
-        "features": {
-          "nesting-rules": true
-        }
-      },
-      "postcss-custom-media": {}
-    }
-  },
   "standard": {
     "ignore": [
       "/dist/**/*.js"
@@ -96,15 +86,13 @@
     "babel-polyfill": "^6.26.0",
     "browser-cookies": "^1.2.0",
     "browser-or-node": "^1.1.0",
-    "choo": "7.1.0",
+    "choo": "7.0.0",
     "choo-devtools": "^3.0.2",
-    "choo-lazy-view": "^2.0.0",
-    "choo-meta": "^2.0.0",
+    "choo-meta": "^1.0.4",
     "choo-notification": "^1.0.0",
     "choo-service-worker": "^2.4.0",
     "clipboard-copy": "^3.0.0",
     "is-equal-shallow": "^0.1.3",
-    "isomorphic-fetch": "^2.2.1",
     "localforage": "^1.7.1",
     "mm-ss": "^1.0.0",
     "nanobounce": "^1.0.1",
@@ -115,9 +103,8 @@
     "normalize-url": "^2.0.1",
     "promise-hash": "^1.2.0",
     "query-string": "^6.4.2",
-    "resolve": "1.15.0",
     "shallow-clone": "^3.0.0",
-    "sheetify": "^8.0.0",
+    "sheetify": "^7.3.2",
     "validate-formdata": "^2.1.0",
     "validator": "^10.11.0",
     "web-animations-js": "^2.3.1"

@@ -9,29 +9,26 @@ const classnames = require('classnames')
 const inputEl = (props) => {
   const {
     autofocus = false,
-    events = {
-      onkeyup: props.onKeyUp || props.onkeyup,
-      onkeypress: props.onKeyPress || props.onkeypress,
-      onkeydown: props.onKeyDown || props.onkeydown,
-      oninput: props.onInput || props.oninput,
-      onchange: props.onChange || props.onchange
-    },
     id = props.name || props.type,
     value = '',
     type = 'text',
     theme = 'auto',
     invalid = false,
     name = props.type,
+    onchange = () => {},
+    onKeyPress = () => {},
+    onInput = () => {},
+    onKeyUp = () => {},
+    onKeyDown = () => {},
     placeholder = '',
-    autocomplete = 'off',
+    autocomplete = false,
     required = 'required'
   } = props
 
   const prefix = props.prefix || props.classList
 
-  const attrs = Object.assign({
+  const attrs = {
     autofocus: autofocus,
-    autocomplete,
     class: classnames(
       prefix,
       theme === 'dark' ? 'bg-black white' : foreground,
@@ -39,17 +36,23 @@ const inputEl = (props) => {
       invalid ? 'invalid' : 'valid'
     ),
     value: value,
+    onkeyup: onKeyUp,
+    onkeypress: onKeyPress,
+    onkeydown: onKeyDown,
+    oninput: onInput,
+    onchange: onchange,
+    autocomplete: autocomplete,
     id: id,
     type: type,
     name: name,
     placeholder: placeholder,
     required: required
-  }, events)
+  }
 
-  if (props.min && type === 'text') {
+  if (props.min && type === 'string') {
     attrs.minlength = props.min
   }
-  if (props.max && type === 'text') {
+  if (props.max && type === 'string') {
     attrs.maxlength = props.max
   }
 

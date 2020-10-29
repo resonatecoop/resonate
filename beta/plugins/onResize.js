@@ -1,15 +1,19 @@
 const Nanobounce = require('nanobounce')
 const nanobounce = Nanobounce() // timeout defaults to 256ms.
 
-module.exports = () => {
+module.exports = onResize
+
+function onResize () {
   return (state, emitter) => {
+    state.events.RESIZE = 'resize'
+
     emitter.on(state.events.DOMCONTENTLOADED, () => {
       window.onresize = onResize
     })
 
     function onResize () {
-      return nanobounce(() => {
-        emitter.emit(state.events.RENDER)
+      nanobounce(() => {
+        emitter.emit(state.events.RESIZE)
       })
     }
   }

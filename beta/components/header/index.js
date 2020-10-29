@@ -196,7 +196,7 @@ function renderRightNav (state, machine, local) {
               <small class=${local.credits < 0.2 ? 'red' : ''}>${local.credits}</small>
             </div>
             <a href="" onclick=${(e) => { e.preventDefault(); machine.emit('creditsDialog:open') }} class="link flex items-center justify-end dim pa2">
-              <span class="f7 b ph2">Add credits</span>
+              <span class="f7 b ph2">TOP-UP</span>
               <span class="flex justify-center items-center h1 w1">
                 ${icon('add-fat', { class: `icon icon--sm ${iconFillInvert}` })}
               </span>

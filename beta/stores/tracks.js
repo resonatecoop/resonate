@@ -63,31 +63,6 @@ function tracks () {
       emitter.emit('meta', state.meta)
     })
 
-    emitter.once('prefetch:track', (id) => {
-      if (!state.prefetch) return
-      if (!id) return
-
-      state.track = state.track || {
-        data: { track: {} }
-      }
-
-      const request = state.api.tracks.findOne({ id }).then((response) => {
-        if (response.data) {
-          state.track.data = adapter(response.data)
-
-          if (!state.tracks.length) {
-            state.tracks.push(state.track.data)
-          }
-        }
-
-        emitter.emit('tracks:meta')
-
-        emitter.emit(state.events.RENDER)
-      })
-
-      state.prefetch.push(request)
-    })
-
     emitter.on('tracks:buy', async (trackId) => {
       try {
         let response = await state.api.plays.buy({

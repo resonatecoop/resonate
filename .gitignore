@@ -2,10 +2,6 @@ node_modules/
 .nyc_output/
 coverage/
 dist/
-public/
-nginx-conf/
-docker-compose-*
-
 tmp/
 npm-debug.log*
 .DS_Store# Logs

@@ -46,7 +46,7 @@ class FeaturedLabels extends Component {
       const data = await storage.getItem(key)
 
       if (!data) {
-        const response = await this.state.api.labels.query(ids)
+        const response = await this.state.api.artists.query(ids)
 
         if (response.data) {
           this.local.items = response.data
