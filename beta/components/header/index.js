@@ -21,8 +21,7 @@ const {
   background: bg,
   foreground: fg,
   iconFill,
-  iconFillInvert,
-  bordersInvert: borders
+  iconFillInvert
 } = require('@resonate/theme-skins')
 
 class Header extends Nanocomponent {
@@ -171,73 +170,60 @@ class Header extends Nanocomponent {
 }
 
 function renderRightNav (state, machine, local) {
-  return html`
-    <nav role="navigation" aria-label="Secondary navigation" class="dropdown-navigation flex flex-auto justify-end items-center">
-      <ul class="list ma0 pa0 flex">
-        <li>
-          <a href="" class="flex justify-end w4 dropdown-toggle">
-            <span class="flex justify-center items-center w3 h3">
-              ${icon('dropdown', { class: `icon icon--sm ${iconFill}` })}
-            </span>
-          </a>
-          ${dropdownMenu()}
-        </li>
-      </ul>
-    </nav>
-  `
-
-  function dropdownMenu () {
-    if (local.user.uid) {
-      return html`
-        <ul class="${fg} list ma0 pa2 absolute right-0 dropdown z-999" style="width: 100vw;left:auto;margin-top:1px;max-width:24rem;">
-          <li class="flex items-start">
-            <div class="flex flex-column pa2 w-100">
-              Credits
-              <small class=${local.credits < 0.2 ? 'red' : ''}>${local.credits}</small>
-            </div>
-            <a href="" onclick=${(e) => { e.preventDefault(); machine.emit('creditsDialog:open') }} class="link flex items-center justify-end dim pa2">
-              <span class="f7 b ph2">TOP-UP</span>
-              <span class="flex justify-center items-center h1 w1">
-                ${icon('add-fat', { class: `icon icon--sm ${iconFillInvert}` })}
+  if (local.user.uid) {
+    return html`
+      <nav role="navigation" aria-label="Secondary navigation" class="dropdown-navigation flex flex-auto justify-end items-center">
+        <ul class="list ma0 pa0 flex">
+          <li>
+            <a href="" class="flex justify-end w4 dropdown-toggle">
+              <span class="flex justify-center items-center w3 h3">
+                ${icon('dropdown', { class: `icon icon--sm ${iconFill}` })}
               </span>
             </a>
-          </li>
-          <li>
-            ${state.cache(ThemeSwitcher, 'theme-switcher-header').render()}
-          </li>
-          <li>
-            <a class="link db dim pa2 w-100" href="/account">Account settings</a>
-          </li>
-          <li>
-            <a href="" onclick=${(e) => machine.emit('logoutDialog:open')} class="link db dim pa2 w-100">
-              Log out
-            </a>
+            <ul class="${fg} list ma0 pa2 absolute right-0 dropdown z-999" style="width: 100vw;left:auto;margin-top:1px;max-width:24rem;">
+              <li class="flex items-start">
+                <div class="flex flex-column pa2 w-100">
+                  Credits
+                  <small class=${local.credits < 0.2 ? 'red' : ''}>${local.credits}</small>
+                </div>
+                <a href="" onclick=${(e) => { e.preventDefault(); machine.emit('creditsDialog:open') }} class="link flex items-center justify-end dim pa2">
+                  <span class="f6 b ph2">Add credits</span>
+                  <span class="flex justify-center items-center h1 w1">
+                    ${icon('add-fat', { class: `icon icon--sm ${iconFillInvert}` })}
+                  </span>
+                </a>
+              </li>
+              <li>
+                ${state.cache(ThemeSwitcher, 'theme-switcher-header').render()}
+              </li>
+              <li>
+                <a class="link db dim pa2 w-100" href="/account">Account settings</a>
+              </li>
+              <li>
+                <a href="" onclick=${(e) => machine.emit('logoutDialog:open')} class="link db dim pa2 w-100">
+                  Log out
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
-      `
-    }
-
-    return html`
-      <ul class="${fg} list ma0 pa2 absolute right-0 dropdown z-999" style="width: 100vw;left:auto;margin-top:1px;max-width:24rem;">
-        <li>
-          <a class="link db dim pa2 w-100" href="/login">Login</a>
-        </li>
-        <li class="bb bw ${borders}"></li>
-        <li>
-          <a class="link db dim pa2 w-100" target="_blank" rel="noopener" href="${BASE_URL}/join">Join</a>
-        </li>
-      </ul>
+      </nav>
     `
   }
+
+  return html`
+    <ul class="${!state.resolved ? 'dn' : 'flex'} list flex-row ma0 pa0 mr3">
+      <li class="mr3">
+        <a class="link db dim pa2 w-100" href="/login">Login</a>
+      </li>
+      <li>
+        <a class="link ${fg} db dim pv2 ph3 w-100" target="_blank" rel="noopener" href="${BASE_URL}/join">Join</a>
+      </li>
+    </ul>
+  `
 }
 
 function renderLeftNav () {
-  const listen = link({
-    href: '/',
-    text: 'listen',
-    prefix: 'link flex items-center h3 ph3'
-  })
-
   const dropdownLink = link({
     href: '',
     text: 'learn',
@@ -247,9 +233,6 @@ function renderLeftNav () {
   return html`
     <nav role="navigation" aria-label="Main navigation" class="dropdown-navigation flex flex-auto">
       <ul class="list ma0 pa0 flex">
-        <li>
-          ${listen}
-        </li>
         <li>
           ${dropdownLink}
           ${renderLearnDropdown()}
