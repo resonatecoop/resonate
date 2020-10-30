@@ -1,6 +1,6 @@
 const promiseHash = require('promise-hash/lib/promise-hash')
 const setTitle = require('../lib/title')
-const isUrl = require('validator/lib/isUrl')
+const isUrl = require('validator/lib/isURL')
 const storage = require('localforage')
 storage.config({
   name: 'resonate',
@@ -69,19 +69,6 @@ function app () {
         'twitter:site': '@resonatecoop'
       })
     }
-
-    emitter.on('route:/', async () => {
-      try {
-        const response = await state.api.tracklists.get({ type: 'random' })
-
-        if (response.data) {
-          state.tracks = response.data.map(adapter)
-          emitter.emit(state.events.RENDER)
-        }
-      } catch (err) {
-        log.error(err)
-      }
-    })
 
     emitter.on('route:library/:type', () => {
       if (!state.user.uid) {
@@ -199,7 +186,7 @@ function app () {
       }
     })
 
-    emitter.on(state.events.VISIBILITYCHANGE, (vis) => {
+    emitter.on('VISIBILITYCHANGE', (vis) => {
       if (vis === 'VISIBLE') {
         emitter.emit('users:auth', false)
         emitter.emit('update')
@@ -238,16 +225,20 @@ function app () {
       }
     })
 
-    emitter.on('logout', (redirect = false) => {
-      state.user = {}
-      state.api = generateApi()
-      storage.clear() // clear everything in indexed db
-
-      if (redirect) {
-        emitter.emit('redirect', {
-          dest: '/login',
-          message: 'You are now logged out…'
-        })
+    emitter.on('logout', async (redirect = false) => {
+      try {
+        await state.api.auth.logout()
+        state.api = generateApi()
+        state.user = {}
+        storage.clear() // clear everything in indexed db
+        if (redirect) {
+          emitter.emit('redirect', {
+            dest: '/login',
+            message: 'You are now logged out…'
+          })
+        }
+      } catch (err) {
+        emitter.emit('error', err)
       }
     })
 
@@ -262,12 +253,8 @@ function app () {
 
       emitter.emit('update')
 
-      emitter.on(state.events.OFFLINE, () => {
+      emitter.on('OFFLINE', () => {
         emitter.emit('notify', { message: 'Your browser is offline' })
-      })
-
-      emitter.on(state.events.RESIZE, () => {
-        emitter.emit(state.events.RENDER)
       })
 
       emitter.emit('users:auth')

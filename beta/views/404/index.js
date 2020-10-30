@@ -8,7 +8,7 @@ function NotFound () {
     return viewLayout((state, emit) => html`
       <div class="flex flex-column flex-auto justify-center items-center pb6">
         <div class="measure">
-          <h1 class="flex flex-column lh-title tc f2">
+          <h1 class="flex flex-column lh-title fw1 tc f2">
             404
             <small>Page not found</small>
           </h1>

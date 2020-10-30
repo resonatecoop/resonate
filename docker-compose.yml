@@ -1,0 +1,65 @@
+--- 
+services: 
+  beta:
+    build: .
+    networks:
+      - app-network
+    command: npm start
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - /var/www/app/node_modules
+    ports:
+      - "8080:8080"
+    restart: always
+
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    depends_on:
+      - beta
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - webserver
+    command: certonly --webroot --webroot-path=/var/www/html --email auggod@resonate.is --agree-tos --no-eff-email --force-renewal -d beta.stream.resonate.is
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: "${PWD}/public/"
+      o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: "${PWD}/dhparam/"
+      o: bind
+
+version: "3.7"

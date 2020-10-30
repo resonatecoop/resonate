@@ -145,7 +145,7 @@ function LabelView () {
         <section id="label-albums" class="flex-auto mh3 mt4">
           <div class="flex">
             <h3 class="fw3 lh-title relative">
-              Albums
+              All releases
               ${renderTotal(count)}
             </h3>
           </div>

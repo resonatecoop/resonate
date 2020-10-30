@@ -1,6 +1,6 @@
 {
   "name": "@resonate/api-factory-generator",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "Project first published as @zerowastemap/api-factory-generator. Forked it to allow more specific configuration for resonate.",
   "main": "index.js",
   "directories": {
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "ajv": "^6.10.0",
-    "isobject": "^3.0.1",
-    "query-string": "^6.3.0"
+    "ajv-keywords": "^3.5.2",
+    "isobject": "^3.0.1"
   }
 }
