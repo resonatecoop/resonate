@@ -1,7 +1,7 @@
 {
   "name": "beta-player",
   "main": "index.js",
-  "version": "6.0.0-13",
+  "version": "6.0.0-12",
   "private": true,
   "scripts": {
     "build": "NODE_ENV=production bankai build ./bankai.js",
