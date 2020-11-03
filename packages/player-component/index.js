@@ -206,14 +206,18 @@ class Player extends Nanocomponent {
 
         const seeker = this.state.components['player-seeker']
 
-        seeker.progress = this.local.progress
+        if (seeker) {
+          seeker.progress = this.local.progress
+        }
 
-        const seekerEl = this.element.querySelector('#seeker')
+        if (this.element) {
+          const seekerEl = this.element.querySelector('#seeker')
 
-        if (seekerEl) {
-          seekerEl.rangeSlider.update({
-            value: this.local.progress
-          })
+          if (seekerEl) {
+            seekerEl.rangeSlider.update({
+              value: this.local.progress
+            })
+          }
         }
 
         /**
@@ -240,6 +244,10 @@ class Player extends Nanocomponent {
 
   playing () {
     return this.local.playback.state === 'playing'
+  }
+
+  setUrl (url) {
+    return url
   }
 
   createElement (props) {
