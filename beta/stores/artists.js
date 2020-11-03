@@ -115,10 +115,23 @@ function artists () {
 
       emitter.emit(state.events.RENDER)
     })
-    emitter.on('route:artists/:uid/albums', getArtistAlbums)
-    emitter.on('route:artists/:uid/tracks', getArtist)
+
+    emitter.on('route:artists/:uid/albums', () => {
+      const uid = Number(state.params.uid)
+      return getArtistAlbums(uid)
+    })
+
+    emitter.on('route:artists/:uid/tracks', () => {
+      const uid = Number(state.params.uid)
+      return getArtist(uid)
+    })
+
     emitter.on('route:artists', getArtists)
-    emitter.on('route:artists/:uid', getArtist)
+
+    emitter.on('route:artists/:uid', () => {
+      const uid = Number(state.params.uid)
+      return getArtist(uid)
+    })
 
     function setMeta () {
       const { name, id, avatar = {}, description } = state.artist.data
@@ -157,8 +170,7 @@ function artists () {
       emitter.emit('meta', state.meta)
     }
 
-    async function getArtistAlbums () {
-      const uid = Number(state.params.uid)
+    async function getArtistAlbums (uid) {
       const isNew = state.artist.data.id !== uid
 
       try {
@@ -201,9 +213,11 @@ function artists () {
       }
     }
 
-    async function getLatestRelease () {
-      const uid = Number(state.params.uid)
-      const response = await state.api.artists.getLatestRelease(uid)
+    async function getLatestRelease (uid) {
+      const response = await state.api.artists.getLatestRelease({
+        uid: uid,
+        limit: 1
+      })
 
       if (response.data) {
         state.artist.latestRelease.items = response.data
@@ -212,11 +226,16 @@ function artists () {
       }
     }
 
-    async function getTracks (limit = 10) {
-      const uid = Number(state.params.uid)
+    async function getTracks (uid) {
       const { tracks, topTracks } = await promiseHash({
-        tracks: state.api.artists.getTracks(uid, limit),
-        topTracks: state.api.artists.getTopTracks(uid, 5)
+        tracks: state.api.artists.getTracks({
+          uid: uid,
+          limit: 5
+        }),
+        topTracks: state.api.artists.getTopTracks({
+          uid: uid,
+          limit: 5
+        })
       })
 
       if (topTracks.data) {
@@ -226,22 +245,24 @@ function artists () {
           state.tracks = state.artist.topTracks.items
         }
 
-        emitter.emit(state.events.RENDER)
-      } else if (tracks.data) {
+        return emitter.emit(state.events.RENDER)
+      }
+
+      if (tracks.data) {
         state.artist.tracks = tracks.data.map(adapter)
 
         if (!state.tracks.length) {
           state.tracks = state.artist.tracks
         }
-
-        emitter.emit(state.events.RENDER)
       }
+
+      emitter.emit(state.events.RENDER)
     }
 
-    async function getArtistLabel () {
-      const uid = Number(state.params.uid)
-
-      const response = await state.api.artists.getLabel(uid)
+    async function getArtistLabel (uid) {
+      const response = await state.api.artists.getLabel({
+        uid: uid
+      })
 
       if (response.data) {
         state.artist.label.data = response.data
@@ -250,9 +271,7 @@ function artists () {
       }
     }
 
-    async function getArtist () {
-      const uid = Number(state.params.uid)
-
+    async function getArtist (uid) {
       if (isNaN(uid)) {
         return emitter.emit(state.events.PUSHSTATE, '/')
       }
@@ -266,7 +285,9 @@ function artists () {
       }
 
       try {
-        const artist = await state.api.artists.findOne({ uid })
+        const artist = await state.api.artists.findOne({
+          uid: uid
+        })
 
         if (!artist.data) {
           state.artist.notFound = true
@@ -275,10 +296,10 @@ function artists () {
 
           emitter.emit(state.events.RENDER)
 
-          getTracks()
-          getLatestRelease()
-          getArtistAlbums()
-          getArtistLabel()
+          getTracks(uid)
+          getLatestRelease(uid)
+          getArtistAlbums(uid)
+          getArtistLabel(uid)
         }
       } catch (err) {
         emitter.emit('error', err)
