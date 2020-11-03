@@ -1,5 +1,6 @@
 const promiseHash = require('promise-hash/lib/promise-hash')
 const nanologger = require('nanologger')
+const adapter = require('@resonate/schemas/adapters/v1/track')
 const log = nanologger('store:labels')
 const setTitle = require('../lib/title')
 const Labels = require('../components/labels')
@@ -273,6 +274,13 @@ function labels () {
         state.label.albums.items = response.data || []
         state.label.albums.count = response.count
         state.label.albums.numberOfPages = response.numberOfPages || 1
+
+        if (!state.tracks.length && state.label.albums.items.length) {
+          const item = state.label.albums.items[0]
+          if (item.tracks && item.tracks.length) {
+            state.tracks = item.tracks.map(adapter)
+          }
+        }
 
         emitter.emit('labels:meta')
 
