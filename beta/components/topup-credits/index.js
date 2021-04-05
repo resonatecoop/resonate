@@ -464,7 +464,8 @@ function renderPayment (local, state, emit) {
         }
 
         if (countryCode === 'US') {
-          const ratesApiURL = 'https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD'
+          const ratesApiHost = process.env.RATES_API_HOST || 'https://api.ratesapi.io'
+          const ratesApiURL = `${ratesApiHost}/latest?base=EUR&symbols=USD`
           const { rates } = await (await fetch(ratesApiURL)).json()
 
           local.rate = rates.USD
