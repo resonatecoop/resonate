@@ -25,6 +25,7 @@ module.exports = (app) => {
     app.use(require('choo-notification')())
   }
 
+  app.use(require('./stores/pwa')())
   app.use(plugins.theme())
   app.use(plugins.tabbing())
   app.use(plugins.offlineDetect())
