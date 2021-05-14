@@ -825,6 +825,9 @@ const generateApi = (opts = {}) => {
         }
       },
       user: {
+        getProfile: {
+          path: '/user/profile'
+        },
         trackgroups: {
           addItems: {
             path: '/user/trackgroups/[:id]/items/add',

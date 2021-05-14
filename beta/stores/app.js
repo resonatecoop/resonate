@@ -164,37 +164,29 @@ function app () {
     })
 
     emitter.on('auth', async (props = {}) => {
-      const { reload = true, token, clientId, user } = props
-
-      if (token && clientId && user) {
-        state.api = generateApi({ token, clientId })
-        state.apiv2 = generateApi({ token, clientId, version: 2 })
-        state.clientId = clientId
-        state.credits = user.credits
-        state.user = user
-      }
+      const { reload = true } = props
 
       if (state.cookieConsentStatus === 'deny') {
         return emitter.emit('api:ok')
       }
 
       try {
-        const payload = token ? { access_token: token } : {}
-        const response = await state.api.auth.tokens(payload)
+        const response = await state.apiv2.user.getProfile()
 
-        if (response.access_token) {
+        if (response.data) {
           // ok
-          const { access_token: token, clientId, user } = response
+          const user = response.data
 
           state.user = user
-          state.clientId = clientId
+          state.clientId = user.clientId
           state.credits = user.credits
+          state.token = user.token
 
-          state.api = generateApi({ token, clientId })
-          state.apiv2 = generateApi({ token, clientId, version: 2 })
+          state.api = generateApi({ token: state.token, clientId: state.clientId })
+          state.apiv2 = generateApi({ token: state.token, clientId: state.clientId, version: 2 })
 
           if (state.cookieConsentStatus !== 'deny') {
-            cookies.set('redirect_discovery', '1', { expires: 365 })
+            cookies.set('redirect_discovery', '1', { secure: true, domain: process.env.APP_DOMAIN, expires: 365 })
           }
         } else if (response.status === 401) {
           // 401 unauthorized access
@@ -211,7 +203,7 @@ function app () {
       }
     })
 
-    emitter.on('logout', async (redirect = false) => {
+    emitter.on('logout', (redirect = false) => {
       state.user = {}
       state.credits = 0
       delete state.clientId
@@ -221,17 +213,11 @@ function app () {
 
       emitter.emit(state.events.RENDER)
 
-      try {
-        await state.api.auth.logout()
-
-        if (redirect) {
-          emitter.emit('redirect', {
-            dest: '/login',
-            message: 'You are now logged out…'
-          })
-        }
-      } catch (err) {
-        emitter.emit('error', err)
+      if (redirect) {
+        emitter.emit('redirect', {
+          dest: '/login',
+          message: 'You are now logged out…'
+        })
       }
     })
 

@@ -131,7 +131,8 @@ class Header extends Component {
         `,
         onClose: function (e) {
           if (this.element.returnValue === 'yes') {
-            emit('logout', true)
+            emit('logout', false)
+            window.location = '/api/v2/user/logout'
           }
           machine.emit('logoutDialog:close')
           this.destroy()
@@ -165,7 +166,7 @@ class Header extends Component {
     const nav = () => {
       const avatar = this.state.user.avatar || {}
       const fallback = avatar.small || imagePlaceholder(60, 60) // v1 or undefined
-      const src = avatar['profile_photo-s'] || fallback // v2
+      const src = avatar['profile_photo-sm'] || fallback // v2
 
       return html`
         <nav role="navigation" aria-label="Main navigation" class="dropdown-navigation flex w-100 flex-auto justify-end-l">
@@ -231,13 +232,16 @@ class Header extends Component {
                 <li class="mb1" role="menuitem">
                   ${this.state.cache(ThemeSwitcher, 'theme-switcher-header').render()}
                 </li>
-                <li class=${!this.state.resolved || !this.state.user.uid ? 'dn' : 'mb1'} role="menuitem">
-                  <a class="link db pv2" href="/u/${this.state.user.uid}">Profile</a>
+                <li class=${!this.state.resolved || !this.state.user.id ? 'dn' : 'mb1'} role="menuitem">
+                  <a class="link db pv2" href="/u/${this.state.user.id}">Profile</a>
                 </li>
-                <li class=${!this.state.resolved || this.state.user.uid ? 'dn' : 'mb1'} role="menuitem">
-                  <a class="link db pv2" href="/login">Login</a>
+                <li class=${!this.state.resolved || !this.state.user.id ? 'dn' : 'mb1'} role="menuitem">
+                  <a class="link db pv2" href="/api/v2/user/profileRedirect" onclick=${(e) => { e.preventDefault(); window.location = '/api/v2/user/profileRedirect' }}>Edit profile</a>
                 </li>
-                <li class=${!this.state.resolved || this.state.user.uid ? 'dn' : 'mb1'} role="menuitem">
+                <li class=${!this.state.resolved || this.state.user.id ? 'dn' : 'mb1'} role="menuitem">
+                  <a class="link db pv2" href="/api/v2/user/connect/resonate" onclick=${(e) => { e.preventDefault(); window.location = '/api/v2/user/connect/resonate' }}>Login</a>
+                </li>
+                <li class=${!this.state.resolved || this.state.user.id ? 'dn' : 'mb1'} role="menuitem">
                   <a class="link db pv2" target="_blank" rel="noreferer noopener" href="https://resonate.is/join">Become a member</a>
                 </li>
                 <li class="mb1" role="menuitem">
