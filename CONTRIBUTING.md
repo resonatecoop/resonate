@@ -5,7 +5,7 @@ Thanks for your interest in contributing!
 There are many ways to contribute:
 - Refactoring code
 - Fixing bugs, after reporting them
-- Building new features, based on the roadmap in [README](README.md#roadmap) and related Github issues.
+- Building new features, based on the roadmap on [Github Projects](https://github.com/resonatecoop/stream/projects/) and the [backlog in our community forum](https://community.resonate.is/c/platform/52)
 
 ## Guidelines
 
