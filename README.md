@@ -52,8 +52,7 @@
 
 ## API
 
-If you want to build on the API for personal use, start with [the API documentation](https://github.com/resonatecoop/stream/blob/develop/docs/api.md).
-Before you start, check out the [Migrate to new APIs project](https://github.com/resonatecoop/stream/projects/5#card-59829409) and consider checking the [backlog in our community forum](https://community.resonate.is/c/platform/52). 
+If you want to build on the API for personal use, check out the [Migrate to new APIs project](https://github.com/resonatecoop/stream/projects/5#card-59829409) and consider checking the [backlog in our community forum](https://community.resonate.is/c/platform/52). 
 
 ## Installation
 
