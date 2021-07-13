@@ -40,6 +40,7 @@
 </div>
 
 ## Table of Contents
+- [API](#api)
 - [Installation](#installation)
 - [Development](#development)
 - [Environment](#environment)
@@ -48,6 +49,10 @@
 - [Code style](#code-style)
 - [Contributors](#contributors)
 - [See Also](#see-also)
+
+## API
+
+If you want to build on the API for personal use, take a look through the work done in the [Migrate to new APIs project](https://github.com/resonatecoop/stream/projects/5#card-59829409) and consider checking the [backlog in our community forum](https://community.resonate.is/c/platform/52). 
 
 ## Installation
 
